@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2309EB5F17B48D970064A911 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2309EB5E17B48D970064A911 /* AudioToolbox.framework */; };
 		2319DD53179044DD00B8A864 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2319DD52179044DD00B8A864 /* Foundation.framework */; };
 		2319DD55179044DD00B8A864 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2319DD54179044DD00B8A864 /* CoreGraphics.framework */; };
 		2319DD57179044DD00B8A864 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2319DD56179044DD00B8A864 /* UIKit.framework */; };
@@ -22,6 +23,36 @@
 		2319DD74179044DD00B8A864 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2319DD58179044DD00B8A864 /* CoreData.framework */; };
 		2319DD7C179044DD00B8A864 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2319DD7A179044DD00B8A864 /* InfoPlist.strings */; };
 		2319DD7E179044DD00B8A864 /* Mission_DharmaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2319DD7D179044DD00B8A864 /* Mission_DharmaTests.m */; };
+		2369784E189619CA009903E5 /* DHBPodcast.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784B189619CA009903E5 /* DHBPodcast.m */; };
+		2369784F189619CA009903E5 /* DHBPodcastEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784D189619CA009903E5 /* DHBPodcastEpisode.m */; };
+		23697852189623E6009903E5 /* dharma talk settings icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23697850189623E6009903E5 /* dharma talk settings icon@2x.png */; };
+		23697853189623E6009903E5 /* dharma talk spotlight icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23697851189623E6009903E5 /* dharma talk spotlight icon@2x.png */; };
+		237806701817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */; };
+		237F8F7C17B357180040A13C /* DHBAudioTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */; };
+		237F8F8517B4109F0040A13C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 237F8F8417B4109F0040A13C /* libxml2.dylib */; };
+		2380828C189613EC00FF6505 /* dharma talk icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2380828B189613EC00FF6505 /* dharma talk icon@2x.png */; };
+		2388D94E1856B1F40006BA09 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2388D94D1856B1F40006BA09 /* QuartzCore.framework */; };
+		238B7A26188C5D9C00FF44C0 /* perry-color-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 238B7A24188C5D9C00FF44C0 /* perry-color-circle.png */; };
+		238B7A27188C5D9C00FF44C0 /* perry-color-circle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 238B7A25188C5D9C00FF44C0 /* perry-color-circle@2x.png */; };
+		23A87BBD188784E1009CDC92 /* blue-circle-md@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A87BBC188784E1009CDC92 /* blue-circle-md@2x.png */; };
+		23A87BC01887A0A9009CDC92 /* light-blue-circle-md.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A87BBE1887A0A9009CDC92 /* light-blue-circle-md.png */; };
+		23A87BC11887A0A9009CDC92 /* light-blue-circle-md@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A87BBF1887A0A9009CDC92 /* light-blue-circle-md@2x.png */; };
+		23B0CA9D188D5CBB005AE7DA /* perry-color-texas.png in Resources */ = {isa = PBXBuildFile; fileRef = 23B0CA9B188D5CBB005AE7DA /* perry-color-texas.png */; };
+		23B0CA9E188D5CBB005AE7DA /* perry-color-texas@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23B0CA9C188D5CBB005AE7DA /* perry-color-texas@2x.png */; };
+		23B0CAA0188DD63A005AE7DA /* Dharma Talks Launch Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 23B0CA9F188DD63A005AE7DA /* Dharma Talks Launch Image.png */; };
+		23B0CAA4188DD796005AE7DA /* Dharma Talks Launch Image Short.png in Resources */ = {isa = PBXBuildFile; fileRef = 23B0CAA3188DD796005AE7DA /* Dharma Talks Launch Image Short.png */; };
+		23B6CEA11826C11A00FBE5F5 /* unplayedIndicator.png in Resources */ = {isa = PBXBuildFile; fileRef = 23B6CEA01826C11A00FBE5F5 /* unplayedIndicator.png */; };
+		23B6CEA31826C44F00FBE5F5 /* ThickTexasVector@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23B6CEA21826C44F00FBE5F5 /* ThickTexasVector@2x.png */; };
+		23BA9FCE180E41CE00830234 /* Untitled.png in Resources */ = {isa = PBXBuildFile; fileRef = 23BA9FCD180E41CE00830234 /* Untitled.png */; };
+		23BA9FD1180E432600830234 /* DHBAudioNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BA9FD0180E432600830234 /* DHBAudioNavigationViewController.m */; };
+		23C1E8B2182BF7D800A3C0A0 /* dharmaIcon@120.png in Resources */ = {isa = PBXBuildFile; fileRef = 23C1E8B1182BF7D800A3C0A0 /* dharmaIcon@120.png */; };
+		23C4335A181DB07400598D39 /* DHBAudioTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 23C43359181DB07400598D39 /* DHBAudioTableViewCell.m */; };
+		23C4335D181DB1CC00598D39 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 23C4335C181DB1CC00598D39 /* Reachability.m */; };
+		23C66E9E18326D100054BFD4 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23C66E9818326D100054BFD4 /* libTestFlight.a */; };
+		23C66E9F18326D100054BFD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 23C66E9918326D100054BFD4 /* README.md */; };
+		23C66EA018326D100054BFD4 /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 23C66E9A18326D100054BFD4 /* release_notes.md */; };
+		23C66EA218326E920054BFD4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23C66EA118326E920054BFD4 /* libz.dylib */; };
+		23EC8FC217B5785A00FAB7EB /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2309EB5C17B48CF40064A911 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +66,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2309EB5C17B48CF40064A911 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		2309EB5E17B48D970064A911 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		2319DD4F179044DD00B8A864 /* Mission Dharma.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mission Dharma.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2319DD52179044DD00B8A864 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2319DD54179044DD00B8A864 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -44,8 +77,8 @@
 		2319DD5E179044DD00B8A864 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2319DD60179044DD00B8A864 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2319DD62179044DD00B8A864 /* Mission Dharma-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Mission Dharma-Prefix.pch"; sourceTree = "<group>"; };
-		2319DD63179044DD00B8A864 /* DHBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHBAppDelegate.h; sourceTree = "<group>"; };
-		2319DD64179044DD00B8A864 /* DHBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHBAppDelegate.m; sourceTree = "<group>"; };
+		2319DD63179044DD00B8A864 /* DHBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DHBAppDelegate.h; path = Classes/DHBAppDelegate.h; sourceTree = "<group>"; };
+		2319DD64179044DD00B8A864 /* DHBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DHBAppDelegate.m; path = Classes/DHBAppDelegate.m; sourceTree = "<group>"; };
 		2319DD67179044DD00B8A864 /* Mission_Dharma.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Mission_Dharma.xcdatamodel; sourceTree = "<group>"; };
 		2319DD69179044DD00B8A864 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2319DD6F179044DD00B8A864 /* Mission DharmaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Mission DharmaTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,6 +86,44 @@
 		2319DD79179044DD00B8A864 /* Mission DharmaTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Mission DharmaTests-Info.plist"; sourceTree = "<group>"; };
 		2319DD7B179044DD00B8A864 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2319DD7D179044DD00B8A864 /* Mission_DharmaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Mission_DharmaTests.m; sourceTree = "<group>"; };
+		2369784A189619CA009903E5 /* DHBPodcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBPodcast.h; path = Classes/DHBPodcast.h; sourceTree = "<group>"; };
+		2369784B189619CA009903E5 /* DHBPodcast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBPodcast.m; path = Classes/DHBPodcast.m; sourceTree = "<group>"; };
+		2369784C189619CA009903E5 /* DHBPodcastEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBPodcastEpisode.h; path = Classes/DHBPodcastEpisode.h; sourceTree = "<group>"; };
+		2369784D189619CA009903E5 /* DHBPodcastEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBPodcastEpisode.m; path = Classes/DHBPodcastEpisode.m; sourceTree = "<group>"; };
+		23697850189623E6009903E5 /* dharma talk settings icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharma talk settings icon@2x.png"; sourceTree = "<group>"; };
+		23697851189623E6009903E5 /* dharma talk spotlight icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharma talk spotlight icon@2x.png"; sourceTree = "<group>"; };
+		2378066F1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DHBPodcastEpisodeModel.xcdatamodel; sourceTree = "<group>"; };
+		237F8F7A17B357180040A13C /* DHBAudioTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewController.h; path = Classes/DHBAudioTableViewController.h; sourceTree = "<group>"; };
+		237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioTableViewController.m; path = Classes/DHBAudioTableViewController.m; sourceTree = "<group>"; };
+		237F8F8417B4109F0040A13C /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		2380828B189613EC00FF6505 /* dharma talk icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharma talk icon@2x.png"; sourceTree = "<group>"; };
+		2388D94D1856B1F40006BA09 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		238B7A24188C5D9C00FF44C0 /* perry-color-circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "perry-color-circle.png"; sourceTree = "<group>"; };
+		238B7A25188C5D9C00FF44C0 /* perry-color-circle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "perry-color-circle@2x.png"; sourceTree = "<group>"; };
+		23A87BBC188784E1009CDC92 /* blue-circle-md@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-circle-md@2x.png"; sourceTree = "<group>"; };
+		23A87BBE1887A0A9009CDC92 /* light-blue-circle-md.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "light-blue-circle-md.png"; sourceTree = "<group>"; };
+		23A87BBF1887A0A9009CDC92 /* light-blue-circle-md@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "light-blue-circle-md@2x.png"; sourceTree = "<group>"; };
+		23B0CA9B188D5CBB005AE7DA /* perry-color-texas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "perry-color-texas.png"; sourceTree = "<group>"; };
+		23B0CA9C188D5CBB005AE7DA /* perry-color-texas@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "perry-color-texas@2x.png"; sourceTree = "<group>"; };
+		23B0CA9F188DD63A005AE7DA /* Dharma Talks Launch Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dharma Talks Launch Image.png"; sourceTree = "<group>"; };
+		23B0CAA3188DD796005AE7DA /* Dharma Talks Launch Image Short.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dharma Talks Launch Image Short.png"; sourceTree = "<group>"; };
+		23B6CEA01826C11A00FBE5F5 /* unplayedIndicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unplayedIndicator.png; sourceTree = "<group>"; };
+		23B6CEA21826C44F00FBE5F5 /* ThickTexasVector@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThickTexasVector@2x.png"; sourceTree = "<group>"; };
+		23BA9FCD180E41CE00830234 /* Untitled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Untitled.png; sourceTree = "<group>"; };
+		23BA9FCF180E432600830234 /* DHBAudioNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioNavigationViewController.h; path = Classes/DHBAudioNavigationViewController.h; sourceTree = "<group>"; };
+		23BA9FD0180E432600830234 /* DHBAudioNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioNavigationViewController.m; path = Classes/DHBAudioNavigationViewController.m; sourceTree = "<group>"; };
+		23C1E8B1182BF7D800A3C0A0 /* dharmaIcon@120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharmaIcon@120.png"; sourceTree = "<group>"; };
+		23C43358181DB07400598D39 /* DHBAudioTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewCell.h; path = Classes/DHBAudioTableViewCell.h; sourceTree = "<group>"; };
+		23C43359181DB07400598D39 /* DHBAudioTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioTableViewCell.m; path = Classes/DHBAudioTableViewCell.m; sourceTree = "<group>"; };
+		23C4335B181DB1CC00598D39 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Classes/Reachability.h; sourceTree = "<group>"; };
+		23C4335C181DB1CC00598D39 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = Classes/Reachability.m; sourceTree = "<group>"; };
+		23C66E9818326D100054BFD4 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		23C66E9918326D100054BFD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		23C66E9A18326D100054BFD4 /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
+		23C66E9B18326D100054BFD4 /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
+		23C66E9C18326D100054BFD4 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
+		23C66E9D18326D100054BFD4 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
+		23C66EA118326E920054BFD4 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +131,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2388D94E1856B1F40006BA09 /* QuartzCore.framework in Frameworks */,
+				23C66EA218326E920054BFD4 /* libz.dylib in Frameworks */,
+				23EC8FC217B5785A00FAB7EB /* MediaPlayer.framework in Frameworks */,
+				2309EB5F17B48D970064A911 /* AudioToolbox.framework in Frameworks */,
+				237F8F8517B4109F0040A13C /* libxml2.dylib in Frameworks */,
+				23C66E9E18326D100054BFD4 /* libTestFlight.a in Frameworks */,
 				2319DD55179044DD00B8A864 /* CoreGraphics.framework in Frameworks */,
 				2319DD59179044DD00B8A864 /* CoreData.framework in Frameworks */,
 				2319DD57179044DD00B8A864 /* UIKit.framework in Frameworks */,
@@ -103,6 +180,11 @@
 		2319DD51179044DD00B8A864 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2388D94D1856B1F40006BA09 /* QuartzCore.framework */,
+				23C66EA118326E920054BFD4 /* libz.dylib */,
+				2309EB5E17B48D970064A911 /* AudioToolbox.framework */,
+				2309EB5C17B48CF40064A911 /* MediaPlayer.framework */,
+				237F8F8417B4109F0040A13C /* libxml2.dylib */,
 				2319DD52179044DD00B8A864 /* Foundation.framework */,
 				2319DD54179044DD00B8A864 /* CoreGraphics.framework */,
 				2319DD56179044DD00B8A864 /* UIKit.framework */,
@@ -115,8 +197,10 @@
 		2319DD5A179044DD00B8A864 /* Mission Dharma */ = {
 			isa = PBXGroup;
 			children = (
-				2319DD63179044DD00B8A864 /* DHBAppDelegate.h */,
-				2319DD64179044DD00B8A864 /* DHBAppDelegate.m */,
+				23C66E9718326D100054BFD4 /* TestFlightSDK2 */,
+				23B6CE9F1826C02F00FBE5F5 /* Assets */,
+				23BA9FCD180E41CE00830234 /* Untitled.png */,
+				237F8F7D17B357200040A13C /* Classes */,
 				2319DD69179044DD00B8A864 /* Images.xcassets */,
 				2319DD66179044DD00B8A864 /* Mission_Dharma.xcdatamodeld */,
 				2319DD5B179044DD00B8A864 /* Supporting Files */,
@@ -151,6 +235,63 @@
 				2319DD7A179044DD00B8A864 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		237F8F7D17B357200040A13C /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2369784A189619CA009903E5 /* DHBPodcast.h */,
+				2369784B189619CA009903E5 /* DHBPodcast.m */,
+				2369784C189619CA009903E5 /* DHBPodcastEpisode.h */,
+				2369784D189619CA009903E5 /* DHBPodcastEpisode.m */,
+				23C4335B181DB1CC00598D39 /* Reachability.h */,
+				23C4335C181DB1CC00598D39 /* Reachability.m */,
+				2319DD63179044DD00B8A864 /* DHBAppDelegate.h */,
+				2319DD64179044DD00B8A864 /* DHBAppDelegate.m */,
+				23BA9FCF180E432600830234 /* DHBAudioNavigationViewController.h */,
+				23BA9FD0180E432600830234 /* DHBAudioNavigationViewController.m */,
+				237F8F7A17B357180040A13C /* DHBAudioTableViewController.h */,
+				237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */,
+				23C43358181DB07400598D39 /* DHBAudioTableViewCell.h */,
+				23C43359181DB07400598D39 /* DHBAudioTableViewCell.m */,
+				2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		23B6CE9F1826C02F00FBE5F5 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				23697850189623E6009903E5 /* dharma talk settings icon@2x.png */,
+				23697851189623E6009903E5 /* dharma talk spotlight icon@2x.png */,
+				2380828B189613EC00FF6505 /* dharma talk icon@2x.png */,
+				23B0CAA3188DD796005AE7DA /* Dharma Talks Launch Image Short.png */,
+				23B0CA9F188DD63A005AE7DA /* Dharma Talks Launch Image.png */,
+				23B0CA9B188D5CBB005AE7DA /* perry-color-texas.png */,
+				23B0CA9C188D5CBB005AE7DA /* perry-color-texas@2x.png */,
+				238B7A24188C5D9C00FF44C0 /* perry-color-circle.png */,
+				238B7A25188C5D9C00FF44C0 /* perry-color-circle@2x.png */,
+				23A87BBE1887A0A9009CDC92 /* light-blue-circle-md.png */,
+				23A87BBF1887A0A9009CDC92 /* light-blue-circle-md@2x.png */,
+				23A87BBC188784E1009CDC92 /* blue-circle-md@2x.png */,
+				23C1E8B1182BF7D800A3C0A0 /* dharmaIcon@120.png */,
+				23B6CEA21826C44F00FBE5F5 /* ThickTexasVector@2x.png */,
+				23B6CEA01826C11A00FBE5F5 /* unplayedIndicator.png */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		23C66E9718326D100054BFD4 /* TestFlightSDK2 */ = {
+			isa = PBXGroup;
+			children = (
+				23C66E9818326D100054BFD4 /* libTestFlight.a */,
+				23C66E9918326D100054BFD4 /* README.md */,
+				23C66E9A18326D100054BFD4 /* release_notes.md */,
+				23C66E9B18326D100054BFD4 /* TestFlight+AsyncLogging.h */,
+				23C66E9C18326D100054BFD4 /* TestFlight+ManualSessions.h */,
+				23C66E9D18326D100054BFD4 /* TestFlight.h */,
+			);
+			path = TestFlightSDK2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,6 +342,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "David Brunow";
 				TargetAttributes = {
+					2319DD4E179044DD00B8A864 = {
+						DevelopmentTeam = 97U5N2XGB9;
+					};
 					2319DD6E179044DD00B8A864 = {
 						TestTargetID = 2319DD4E179044DD00B8A864;
 					};
@@ -229,8 +373,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23C66EA018326D100054BFD4 /* release_notes.md in Resources */,
+				238B7A27188C5D9C00FF44C0 /* perry-color-circle@2x.png in Resources */,
 				2319DD5F179044DD00B8A864 /* InfoPlist.strings in Resources */,
+				23B0CAA4188DD796005AE7DA /* Dharma Talks Launch Image Short.png in Resources */,
 				2319DD6A179044DD00B8A864 /* Images.xcassets in Resources */,
+				23C1E8B2182BF7D800A3C0A0 /* dharmaIcon@120.png in Resources */,
+				23697853189623E6009903E5 /* dharma talk spotlight icon@2x.png in Resources */,
+				2380828C189613EC00FF6505 /* dharma talk icon@2x.png in Resources */,
+				23C66E9F18326D100054BFD4 /* README.md in Resources */,
+				23A87BBD188784E1009CDC92 /* blue-circle-md@2x.png in Resources */,
+				238B7A26188C5D9C00FF44C0 /* perry-color-circle.png in Resources */,
+				23B0CA9D188D5CBB005AE7DA /* perry-color-texas.png in Resources */,
+				23BA9FCE180E41CE00830234 /* Untitled.png in Resources */,
+				23B0CAA0188DD63A005AE7DA /* Dharma Talks Launch Image.png in Resources */,
+				23697852189623E6009903E5 /* dharma talk settings icon@2x.png in Resources */,
+				23A87BC01887A0A9009CDC92 /* light-blue-circle-md.png in Resources */,
+				23B0CA9E188D5CBB005AE7DA /* perry-color-texas@2x.png in Resources */,
+				23A87BC11887A0A9009CDC92 /* light-blue-circle-md@2x.png in Resources */,
+				23B6CEA31826C44F00FBE5F5 /* ThickTexasVector@2x.png in Resources */,
+				23B6CEA11826C11A00FBE5F5 /* unplayedIndicator.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,9 +411,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23BA9FD1180E432600830234 /* DHBAudioNavigationViewController.m in Sources */,
+				237806701817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */,
 				2319DD61179044DD00B8A864 /* main.m in Sources */,
+				2369784F189619CA009903E5 /* DHBPodcastEpisode.m in Sources */,
 				2319DD68179044DD00B8A864 /* Mission_Dharma.xcdatamodeld in Sources */,
+				23C4335D181DB1CC00598D39 /* Reachability.m in Sources */,
 				2319DD65179044DD00B8A864 /* DHBAppDelegate.m in Sources */,
+				23C4335A181DB07400598D39 /* DHBAudioTableViewCell.m in Sources */,
+				237F8F7C17B357180040A13C /* DHBAudioTableViewController.m in Sources */,
+				2369784E189619CA009903E5 /* DHBPodcast.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,12 +533,23 @@
 		2319DD82179044DD00B8A864 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: David Brunow (M2JB2FZF76)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mission Dharma/Mission Dharma-Prefix.pch";
+				HEADER_SEARCH_PATHS = usr/include/libxml2;
 				INFOPLIST_FILE = "Mission Dharma/Mission Dharma-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/davidhbrunow/Documents/Development/Mission\\ Dharma/Mission\\ Dharma/TestFlightSDK2",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "53E92E2A-3D4E-4BB3-A982-33B3CD501565";
+				USER_HEADER_SEARCH_PATHS = "\"${SDK_DIR}\"/usr/include/libxml2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -377,12 +557,23 @@
 		2319DD83179044DD00B8A864 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Brunow (97U5N2XGB9)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mission Dharma/Mission Dharma-Prefix.pch";
+				HEADER_SEARCH_PATHS = usr/include/libxml2;
 				INFOPLIST_FILE = "Mission Dharma/Mission Dharma-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/davidhbrunow/Documents/Development/Mission\\ Dharma/Mission\\ Dharma/TestFlightSDK2",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "53E92E2A-3D4E-4BB3-A982-33B3CD501565";
+				USER_HEADER_SEARCH_PATHS = "\"${SDK_DIR}\"/usr/include/libxml2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -446,6 +637,7 @@
 				2319DD83179044DD00B8A864 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2319DD84179044DD00B8A864 /* Build configuration list for PBXNativeTarget "Mission DharmaTests" */ = {
 			isa = XCConfigurationList;
@@ -454,6 +646,7 @@
 				2319DD86179044DD00B8A864 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
@@ -465,6 +658,16 @@
 			);
 			currentVersion = 2319DD67179044DD00B8A864 /* Mission_Dharma.xcdatamodel */;
 			path = Mission_Dharma.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+		2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2378066F1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodel */,
+			);
+			currentVersion = 2378066F1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodel */;
+			path = DHBPodcastEpisodeModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

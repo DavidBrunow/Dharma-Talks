@@ -7,6 +7,7 @@
 //
 
 #import "DHBAppDelegate.h"
+#import <TestFlight.h>
 
 @implementation DHBAppDelegate
 
@@ -18,10 +19,58 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    [TestFlight takeOff:@"3994d666-7b79-4694-9c5f-03419bf1034c"];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    self.podcast = [[DHBPodcast alloc] init];
+    self.lightColor = [UIColor colorWithRed:(0.0/255) green:(179.0/255) blue:(163.0/255) alpha:1.0];
+    self.darkColor = [UIColor colorWithRed:(125.0/255) green:(62.0/255) blue:(0.0/255) alpha:1.0];
+    
+    self.audioNavigationViewController = [[DHBAudioNavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
+    [self.window setRootViewController:self.audioNavigationViewController];
+    
+    hostReachable = [Reachability reachabilityWithHostname: @"http://www.missiondharma.org"];
+    [hostReachable startNotifier];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
+
     return YES;
 }
+
+- (void) checkNetworkStatus:(NSNotification *)notice
+{
+    [self setIsConnectedViaWifi:NO];
+    
+    NetworkStatus hostStatus = [hostReachable currentReachabilityStatus];
+    switch (hostStatus)
+    
+    {
+        case NotReachable:
+        {
+            NSLog(@"A gateway to the host server is down.");
+            //UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Website Unreachable" message:[NSString stringWithFormat:@"Cannot connect to Mission Dharma site"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
+            //[alert show];
+            break;
+            
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"A gateway to the host server is working via WIFI.");
+            [self setIsConnectedViaWifi:YES];
+            
+            break;
+            
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"A gateway to the host server is working via WWAN.");
+            
+            break;
+            
+        }
+    }
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -90,7 +139,7 @@
     if (_managedObjectModel != nil) {
         return _managedObjectModel;
     }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Mission_Dharma" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"DHBPodcastEpisodeModel" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
