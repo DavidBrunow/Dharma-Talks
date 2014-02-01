@@ -27,6 +27,7 @@
 		2369784F189619CA009903E5 /* DHBPodcastEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784D189619CA009903E5 /* DHBPodcastEpisode.m */; };
 		23697852189623E6009903E5 /* dharma talk settings icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23697850189623E6009903E5 /* dharma talk settings icon@2x.png */; };
 		23697853189623E6009903E5 /* dharma talk spotlight icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23697851189623E6009903E5 /* dharma talk spotlight icon@2x.png */; };
+		23747AB5189DA6DB00A5F104 /* dharma talk icon 1024@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23747AB4189DA6DB00A5F104 /* dharma talk icon 1024@2x.png */; };
 		237806701817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */; };
 		237F8F7C17B357180040A13C /* DHBAudioTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */; };
 		237F8F8517B4109F0040A13C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 237F8F8417B4109F0040A13C /* libxml2.dylib */; };
@@ -92,6 +93,7 @@
 		2369784D189619CA009903E5 /* DHBPodcastEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBPodcastEpisode.m; path = Classes/DHBPodcastEpisode.m; sourceTree = "<group>"; };
 		23697850189623E6009903E5 /* dharma talk settings icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharma talk settings icon@2x.png"; sourceTree = "<group>"; };
 		23697851189623E6009903E5 /* dharma talk spotlight icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharma talk spotlight icon@2x.png"; sourceTree = "<group>"; };
+		23747AB4189DA6DB00A5F104 /* dharma talk icon 1024@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dharma talk icon 1024@2x.png"; sourceTree = "<group>"; };
 		2378066F1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DHBPodcastEpisodeModel.xcdatamodel; sourceTree = "<group>"; };
 		237F8F7A17B357180040A13C /* DHBAudioTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewController.h; path = Classes/DHBAudioTableViewController.h; sourceTree = "<group>"; };
 		237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioTableViewController.m; path = Classes/DHBAudioTableViewController.m; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 		23B6CE9F1826C02F00FBE5F5 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				23747AB4189DA6DB00A5F104 /* dharma talk icon 1024@2x.png */,
 				23697850189623E6009903E5 /* dharma talk settings icon@2x.png */,
 				23697851189623E6009903E5 /* dharma talk spotlight icon@2x.png */,
 				2380828B189613EC00FF6505 /* dharma talk icon@2x.png */,
@@ -376,6 +379,7 @@
 				23C66EA018326D100054BFD4 /* release_notes.md in Resources */,
 				238B7A27188C5D9C00FF44C0 /* perry-color-circle@2x.png in Resources */,
 				2319DD5F179044DD00B8A864 /* InfoPlist.strings in Resources */,
+				23747AB5189DA6DB00A5F104 /* dharma talk icon 1024@2x.png in Resources */,
 				23B0CAA4188DD796005AE7DA /* Dharma Talks Launch Image Short.png in Resources */,
 				2319DD6A179044DD00B8A864 /* Images.xcassets in Resources */,
 				23C1E8B2182BF7D800A3C0A0 /* dharmaIcon@120.png in Resources */,
