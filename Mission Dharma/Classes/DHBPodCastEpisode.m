@@ -41,6 +41,7 @@
     
     if([fileManager fileExistsAtPath:self.localPathString]) {
         [self setIsDownloaded:YES];
+        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.localPathString]];
     } else {
         [self setIsDownloaded:NO];
     }
@@ -130,7 +131,7 @@
 {
     [self setValue:URLString forKey:@"urlString"];
     
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [paths objectAtIndex:0];
     
     NSURL *fileNameURL = [NSURL URLWithString:URLString];
@@ -144,6 +145,7 @@
     
     if([fileManager fileExistsAtPath:self.localPathString]) {
         [self setIsDownloaded:YES];
+        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.localPathString]];
     } else {
         [self setIsDownloaded:NO];
     }
@@ -198,6 +200,7 @@
     
     if([fileManager createFileAtPath:self.localPathString contents:self.tempEpisodeData attributes:nil]) {
         [self setIsDownloaded:YES];
+        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.localPathString]];
     } else {
         [self setIsDownloaded:NO];
     }
@@ -213,6 +216,21 @@
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
     return nil;
+}
+
+- (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
+{
+    assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+    
+    NSError *error = nil;
+    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
+                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+
+    if(!success){
+        NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+    }
+    
+    return success;
 }
 
 /*
