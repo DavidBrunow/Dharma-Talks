@@ -4,6 +4,7 @@ Dharma Talks is an iPhone application that allows you to listen to Dharma Talks 
 
 For more information about Mission Dharma, visit their website at http://www.missiondharma.org.
 
+I wrote a blog post about the app [here][linkDharmaTalksBlogPost] and hope to add more information to this readme in the future.
 
 The MIT License (MIT)
 
@@ -26,3 +27,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+[linkDharmaTalksBlogPost]:<http://brunow.org/2014/02/12/dharma-talks/>
