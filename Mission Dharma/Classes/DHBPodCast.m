@@ -54,8 +54,10 @@
         bool isPresentInArray = false;
         
         for(DHBPodcastEpisode *thisEpisode in self.podcastEpisodes) {
-            if([thisEpisode.title isEqualToString:episode.title]) {
+            if([thisEpisode.localPathString isEqualToString:episode.localPathString]) {
                 isPresentInArray = true;
+                //if you have a newer name, set the title of the existing talk to that name
+                thisEpisode.title = episode.title;
             }
         }
         
@@ -302,8 +304,7 @@
                 
                 for(DHBPodcastEpisode *thisEpisode in self.podcastEpisodes) {
                     if([thisEpisode.title isEqualToString:podcastEpisode.title]) {
-                        isPresentInArray = true;
-                    }
+                        isPresentInArray = true;                    }
                 }
                 
                 if(!isPresentInArray && podcastEpisode.title != nil && podcastEpisode.recordDate != nil) {

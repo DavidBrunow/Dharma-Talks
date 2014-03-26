@@ -566,8 +566,10 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
     if(audioPlayerPercentComplete == 1.0) {
         [self.timer invalidate];
         self.timer = nil;
-        [cell.progressView removeFromSuperview];
-        [self.tableView reloadData];
+        [self unselectCell:cell];
+        [self.audioPlayer stop];
+        //[cell.progressView removeFromSuperview];
+        //[self.tableView reloadData];
     }
 }
 
