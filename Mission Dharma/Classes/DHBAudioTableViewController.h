@@ -21,6 +21,7 @@
 
 @interface DHBAudioTableViewController : UITableViewController <UITableViewDelegate, UITableViewDataSource, AVAudioSessionDelegate, AVAudioPlayerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *TableFooterView;
 @property (nonatomic, strong) DHBPodcastEpisode *selectedEpisode;
 @property (nonatomic, strong) AVAudioPlayer *audioPlayer;
 @property (nonatomic, strong) UIProgressView *progressView;

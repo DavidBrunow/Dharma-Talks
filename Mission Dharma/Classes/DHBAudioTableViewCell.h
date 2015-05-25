@@ -20,14 +20,23 @@
 
 @interface DHBAudioTableViewCell : UITableViewCell
 
-@property (nonatomic, retain) UILabel *mainLabel;
-@property (nonatomic, retain) UILabel *subLabel;
-@property (nonatomic, retain) UILabel *nowPlayingLabel;
-@property (nonatomic, retain) UIButton *actionButton;
+@property (weak, nonatomic) IBOutlet UILabel *mainLabel;
+@property (weak, nonatomic) IBOutlet UILabel *subLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *unplayedIndicator;
+@property (weak, nonatomic) IBOutlet UIButton *actionButton;
+@property (weak, nonatomic) IBOutlet UIProgressView *downloadProgressView;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressView;
+@property (weak, nonatomic) IBOutlet UILabel *nowPlayingLabel;
+
+//@property (nonatomic, retain) UILabel *mainLabel;
+//@property (nonatomic, retain) UILabel *subLabel;
+
+//@property (nonatomic, retain) UILabel *nowPlayingLabel;
+//@property (nonatomic, retain) UIButton *actionButton;
 @property (nonatomic, retain) UIButton *playPauseButton;
-@property (nonatomic, retain) UIProgressView *progressView;
-@property (nonatomic, retain) UIProgressView *downloadProgressView;
+//@property (nonatomic, retain) UIProgressView *progressView;
+//@property (nonatomic, retain) UIProgressView *downloadProgressView;
 @property (nonatomic, weak) UITableView *parentTableView;
-@property (nonatomic, retain) UIImageView *unplayedIndicator;
+//@property (nonatomic, retain) UIImageView *unplayedIndicator;
 
 @end
