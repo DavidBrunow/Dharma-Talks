@@ -34,6 +34,7 @@
 @property (nonatomic) bool isConnectedViaWifi;
 @property (strong, nonatomic) UIColor *lightColor;
 @property (strong, nonatomic) UIColor *darkColor;
+@property (strong, nonatomic) NSString *applicationHome;
 
 
 - (void)saveContext;
