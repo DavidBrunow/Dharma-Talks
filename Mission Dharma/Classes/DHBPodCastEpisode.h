@@ -31,6 +31,7 @@
 @property (nonatomic) bool isDownloaded;
 @property (nonatomic) float totalFileSize;
 @property (nonatomic) float downloadInProgress;
+@property (nonatomic, strong) NSString *cacheFolderPathString;
 
 -(void) downloadEpisode;
 -(void) deleteEpisode;

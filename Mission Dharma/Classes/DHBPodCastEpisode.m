@@ -20,7 +20,7 @@
 
 @implementation DHBPodcastEpisode
 
-@synthesize totalFileSize = _totalFileSize, isDownloaded = _isDownloaded, downloadInProgress = _downloadInProgress, tempEpisodeData = _tempEpisodeData;
+@synthesize totalFileSize = _totalFileSize, isDownloaded = _isDownloaded, downloadInProgress = _downloadInProgress, tempEpisodeData = _tempEpisodeData, cacheFolderPathString = _cacheFolderPathString;
 @dynamic currentPlaybackPosition, speaker, localPathString, recordDate, title, URLString, duration, isUnplayed;
 
 - (id)initWithEntity:(NSEntityDescription *)entity insertIntoManagedObjectContext:(NSManagedObjectContext *)context
@@ -38,10 +38,14 @@
 {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     fileManager = [NSFileManager defaultManager];
+    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
-    if([fileManager fileExistsAtPath:self.localPathString]) {
+    self.cacheFolderPathString = [NSString stringWithFormat:@"%@/%@", appDelegate.applicationHome, [self.localPathString lastPathComponent]];
+    
+    if([fileManager fileExistsAtPath:self.cacheFolderPathString]) {
+        
         [self setIsDownloaded:YES];
-        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.localPathString]];
+        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.cacheFolderPathString]];
     } else {
         [self setIsDownloaded:NO];
     }
@@ -71,79 +75,48 @@
     
     [self setValue:info forKey:@"title"];
     
-    if([info rangeOfString:@"2014"].location != NSNotFound) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MMM dd, yyyy"];
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:[NSDate date]];
+    
+    int thisYear = (int)components.year;
+    
+    for(int i = thisYear; i > 2009; i--)
+    {
+        NSString *yearString = [NSString stringWithFormat:@"%d", i];
         
-        [self setValue:[dateFormatter dateFromString:[info substringWithRange:NSMakeRange(0, [info rangeOfString:@"2014"].location + 4)]] forKey:@"recordDate"];
-        
-        if(info.length >= [info rangeOfString:@"2014"].location + 6) {
-            [self setValue:[info substringFromIndex:[info rangeOfString:@"2014"].location + 6] forKey:@"title"];
+        if([info rangeOfString:yearString].location != NSNotFound) {
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"MMM dd, yyyy"];
+            
+            [self setValue:[dateFormatter dateFromString:[info substringWithRange:NSMakeRange(0, [info rangeOfString:yearString].location + 4)]] forKey:@"recordDate"];
+            
+            if(info.length >= [info rangeOfString:yearString].location + 6) {
+                [self setValue:[info substringFromIndex:[info rangeOfString:yearString].location + 6] forKey:@"title"];
+            }
         }
     }
     
-    if([info rangeOfString:@"2013"].location != NSNotFound) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MMM dd, yyyy"];
-        
-        [self setValue:[dateFormatter dateFromString:[info substringWithRange:NSMakeRange(0, [info rangeOfString:@"2013"].location + 4)]] forKey:@"recordDate"];
-        
-        if(info.length >= [info rangeOfString:@"2013"].location + 6) {
-            [self setValue:[info substringFromIndex:[info rangeOfString:@"2013"].location + 6] forKey:@"title"];
-        }
     }
-    
-    if([info rangeOfString:@"2012"].location != NSNotFound) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MMM dd, yyyy"];
-        
-        [self setValue:[dateFormatter dateFromString:[info substringWithRange:NSMakeRange(0, [info rangeOfString:@"2012"].location + 4)]] forKey:@"recordDate"];
-        
-        if(info.length >= [info rangeOfString:@"2012"].location + 6) {
-            [self setValue:[info substringFromIndex:[info rangeOfString:@"2012"].location + 6] forKey:@"title"];
-        }
-    }
-    
-    if([info rangeOfString:@"2011"].location != NSNotFound) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MMM dd, yyyy"];
-        
-        [self setValue:[dateFormatter dateFromString:[info substringWithRange:NSMakeRange(0, [info rangeOfString:@"2011"].location + 4)]] forKey:@"recordDate"];
-        
-        if(info.length >= [info rangeOfString:@"2011"].location + 6) {
-            [self setValue:[info substringFromIndex:[info rangeOfString:@"2011"].location + 6] forKey:@"title"];
-        }
-    }
-    
-    if([info rangeOfString:@"2010"].location != NSNotFound) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"MMM dd, yyyy"];
-        
-        [self setValue:[dateFormatter dateFromString:[info substringWithRange:NSMakeRange(0, [info rangeOfString:@"2010"].location + 4)]] forKey:@"recordDate"];
-        
-        if(info.length >= [info rangeOfString:@"2010"].location + 6) {
-            [self setValue:[info substringFromIndex:[info rangeOfString:@"2010"].location + 6] forKey:@"title"];
-        }
-    }
-}
 
 -(void)setURLString:(NSString *)URLString
 {
     [self setValue:URLString forKey:@"urlString"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [paths objectAtIndex:0];
+    BOOL isDir;
+
+    if(![fileManager fileExistsAtPath:documentsPath isDirectory:&isDir])
+    {
+        [fileManager createDirectoryAtPath:documentsPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
     
     NSURL *fileNameURL = [NSURL URLWithString:URLString];
     
     NSString *fileName = [fileNameURL lastPathComponent];
+    [self setValue:fileName forKey:@"localPathString"];
     
-    [self setValue:[NSString stringWithFormat:@"%@/%@", documentsPath, fileName] forKey:@"localPathString"];
-    
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    fileManager = [NSFileManager defaultManager];
-    
-    if([fileManager fileExistsAtPath:self.localPathString]) {
+    if([fileManager fileExistsAtPath:self.cacheFolderPathString]) {
         [self setIsDownloaded:YES];
         [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.localPathString]];
     } else {
@@ -153,16 +126,17 @@
 
 -(void) downloadEpisode
 {
-    //DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
 
     /* if(!appDelegate.isConnectedViaWifi) {
         UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Not Connected to Wifi" message:[NSString stringWithFormat:@"Sorry, due to the size of each episode, they can only be downloaded if you are connected to wifi."] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
         [alert show];
     } else { */
-        self.tempEpisodeData = [[NSMutableData alloc] init];
-        
-        NSURLRequest *episodeURLRequest  = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[self valueForKey:@"urlString"]]];
-        (void)[[NSURLConnection alloc] initWithRequest:episodeURLRequest delegate:self];
+    self.tempEpisodeData = [[NSMutableData alloc] init];
+    self.cacheFolderPathString = [NSString stringWithFormat:@"%@/%@", appDelegate.applicationHome, [self.localPathString lastPathComponent]];
+    
+    NSURLRequest *episodeURLRequest  = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[self valueForKey:@"urlString"]]];
+    (void)[[NSURLConnection alloc] initWithRequest:episodeURLRequest delegate:self];
     //}
 }
 
@@ -171,7 +145,7 @@
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     fileManager = [NSFileManager defaultManager];
     
-    [fileManager removeItemAtPath:[self valueForKey:@"localPathString"] error:nil];
+    [fileManager removeItemAtPath:[self valueForKey:@"cacheFolderPathString"] error:nil];
     [self setIsDownloaded:NO];
 }
 
@@ -195,12 +169,11 @@
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    fileManager = [NSFileManager defaultManager];
-    
-    if([fileManager createFileAtPath:self.localPathString contents:self.tempEpisodeData attributes:nil]) {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    if([fileManager createFileAtPath:self.cacheFolderPathString contents:self.tempEpisodeData attributes:nil]) {
         [self setIsDownloaded:YES];
-        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.localPathString]];
+        [self addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:self.cacheFolderPathString]];
     } else {
         [self setIsDownloaded:NO];
     }
@@ -211,6 +184,10 @@
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"%@", error);
+    if([error.description.lowercaseString containsString:@"the request timed out"])
+    {
+        [self downloadEpisode];
+    }
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
