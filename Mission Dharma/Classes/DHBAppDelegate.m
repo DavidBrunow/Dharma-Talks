@@ -27,25 +27,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *documentsPath = [paths objectAtIndex:0];
-    
-    self.applicationHome = documentsPath;
-    
-    self.podcast = [[DHBPodcast alloc] init];
-    self.lightColor = [UIColor colorWithRed:(0.0/255) green:(179.0/255) blue:(163.0/255) alpha:1.0];
-    self.darkColor = [UIColor colorWithRed:(125.0/255) green:(62.0/255) blue:(0.0/255) alpha:1.0];
-    
-    [[UINavigationBar appearance] setBarTintColor:self.lightColor];
-    [[UINavigationBar appearance] setTranslucent:NO];
-    
-    /*
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     [TestFlight takeOff:@"3994d666-7b79-4694-9c5f-03419bf1034c"];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+    self.podcast = [[DHBPodcast alloc] init];
+    self.lightColor = [UIColor colorWithRed:(0.0/255) green:(179.0/255) blue:(163.0/255) alpha:1.0];
+    self.darkColor = [UIColor colorWithRed:(125.0/255) green:(62.0/255) blue:(0.0/255) alpha:1.0];
     
     self.audioNavigationViewController = [[DHBAudioNavigationViewController alloc] initWithNavigationBarClass:nil toolbarClass:nil];
     [self.window setRootViewController:self.audioNavigationViewController];
@@ -53,7 +43,7 @@
     hostReachable = [Reachability reachabilityWithHostname: @"http://www.missiondharma.org"];
     [hostReachable startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
-*/
+
     return YES;
 }
 

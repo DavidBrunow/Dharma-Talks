@@ -41,37 +41,52 @@
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
+ 
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    MPRemoteCommandCenter *rcc = [MPRemoteCommandCenter sharedCommandCenter];
-    
-    MPSkipIntervalCommand *skipBackwardIntervalCommand = [rcc skipBackwardCommand];
-    [skipBackwardIntervalCommand setEnabled:YES];
-    [skipBackwardIntervalCommand addTarget:self action:@selector(skipBackwardEvent:)];
-    skipBackwardIntervalCommand.preferredIntervals = @[@(15)];  // Set your own interval
-    
-    MPSkipIntervalCommand *skipForwardIntervalCommand = [rcc skipForwardCommand];
-    skipForwardIntervalCommand.preferredIntervals = @[@(15)];  // Max 99
-    [skipForwardIntervalCommand setEnabled:YES];
-    [skipForwardIntervalCommand addTarget:self action:@selector(skipForwardEvent:)];
-    
-    MPRemoteCommand *pauseCommand = [rcc pauseCommand];
-    [pauseCommand setEnabled:YES];
-    [pauseCommand addTarget:self action:@selector(playOrPauseEvent:)];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    [refreshControl setTintColor:appDelegate.lightColor];
+    [refreshControl addTarget:self action:@selector(refreshTable) forControlEvents:UIControlEventValueChanged];
 
-    MPRemoteCommand *playCommand = [rcc playCommand];
-    [playCommand setEnabled:YES];
-    [playCommand addTarget:self action:@selector(playOrPauseEvent:)];
+    [self setRefreshControl:refreshControl];
     
-    [self.tableView setRowHeight:UITableViewAutomaticDimension];
+    [self.tableView setRowHeight:50.0];
+    [self.tableView setSeparatorInset:UIEdgeInsetsMake(0, 20, 0, 0)];
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
     
-    [self.TableFooterView setFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 0)];
-    [self.tableView setTableFooterView:self.TableFooterView];
+    //making the height of this view zero so that you have to pull up to see the footer
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 0)];
+    
+    UIImageView *ivTexas = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"perry-color-texas"]];
+    [ivTexas setFrame:CGRectMake(20, 30, 31, 30)];
+    
+    UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(60, 25, [[UIScreen mainScreen] bounds].size.width, 35)];
+    [lblName setText:[NSString stringWithFormat:@"David Brunow\n@davidbrunow\nhelloDavid@brunow.org"]];
+    [lblName setText:[NSString stringWithFormat:@"Designed and Developed in Texas\nby David Brunow"]];
+    [lblName setTextColor:[UIColor blackColor]];
+    
+    [lblName setTextColor:appDelegate.lightColor];
+    
+    [lblName setFont:[UIFont fontWithName:@"HelveticaNeue" size:11.0]];
+    [lblName setBackgroundColor:[UIColor clearColor]];
+    [lblName setNumberOfLines:2];
+    
+    [lblName setTextAlignment:NSTextAlignmentLeft];
+    
+    [footerView addSubview:ivTexas];
+    [footerView addSubview:lblName];
+    
+    [self.tableView setTableFooterView:footerView];
 }
 
-- (IBAction)refreshTable {
+- (void) refreshTable
+{
     DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
     [appDelegate.podcast loadEpisodes];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -126,12 +141,12 @@
 {
     DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
+    // Background color
+    view.tintColor = [appDelegate lightColor];
+    
     // Text Color
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
     [header.textLabel setTextColor:[UIColor whiteColor]];
-    [header.backgroundView setBackgroundColor:[appDelegate lightColor]];
-    [header.backgroundView setTintColor:[appDelegate lightColor]];
-
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -148,14 +163,39 @@
 {
     DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
 
-    DHBAudioTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"episodeCell" forIndexPath:indexPath];
+    static NSString *CellIdentifier = @"episodeCell";
+
+    DHBAudioTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    [cell setParentTableView:self.tableView];
+    
+    if (cell == nil) {
+        cell = [[DHBAudioTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
     
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
     NSMutableArray *episodesForYear = [appDelegate.podcast getEpisodesForYear:[[yearsOfEpisodesArray objectAtIndex:indexPath.section] longValue]];
     
     DHBPodcastEpisode *thisEpisode = [episodesForYear objectAtIndex:indexPath.row];
     
-    cell.mainLabel.text = [NSString stringWithFormat:@"%@", thisEpisode.title];
+    cell.mainLabel.Text = [NSString stringWithFormat:@"%@", thisEpisode.title];
+    
+    if(thisEpisode.currentPlaybackPosition > 0) {
+        [cell.progressView setProgress:thisEpisode.currentPlaybackPosition / thisEpisode.duration animated:YES];
+        [cell.progressView setHidden:NO];
+    } else {
+        [cell.progressView setProgress:0.0];
+        [cell.progressView setHidden:YES];
+    }
+    
+    if(thisEpisode.downloadInProgress == 0 || thisEpisode.downloadInProgress == 1.0) {
+        [cell.downloadProgressView setProgress:0.0];
+        [cell.downloadProgressView setHidden:YES];
+    } else {
+        [cell.downloadProgressView setProgress:thisEpisode.downloadInProgress];
+        [cell.downloadProgressView setHidden:NO];
+    }
+    
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     NSString *recordDateString = @"";
     
@@ -168,42 +208,27 @@
         recordDateString = @"Date Unavailable";
     }
     
-    cell.subLabel.text = [NSString stringWithFormat:@"%@ - %@", recordDateString, thisEpisode.speaker];
-    
-    if(thisEpisode.isUnplayed) {
-        [cell.unplayedIndicator setHidden:NO];
-    } else {
-        [cell.unplayedIndicator setHidden:YES];
-    }
+    cell.subLabel.Text = [NSString stringWithFormat:@"%@ - %@", recordDateString, thisEpisode.speaker];
     
     if(thisEpisode.isDownloaded) {
+        //[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [cell.actionButton setTitle:@"" forState:UIControlStateNormal];
         [cell.actionButton setHidden:YES];
-        [cell.actionButton constraints];
-        
         [cell.progressView setHidden:NO];
     } else {
+        //[cell setAccessoryType:UITableViewCellAccessoryNone];
         [cell.actionButton setTitle:@"DOWNLOAD" forState:UIControlStateNormal];
         [cell.actionButton setHidden:NO];
         [cell.actionButton addTarget:self action:@selector(downloadEpisode:) forControlEvents:UIControlEventTouchUpInside];
-        
         [cell.progressView setHidden:YES];
     }
     
-    if(thisEpisode.downloadInProgress == 0 || thisEpisode.downloadInProgress == 1.0) {
-        [cell.downloadProgressView setProgress:0.0];
-        [cell.downloadProgressView setHidden:YES];
+    if(thisEpisode.isUnplayed) {
+        [cell.unplayedIndicator setHidden:NO];
+        //[cell.mainLabel setTextColor:[UIColor darkGrayColor]];
     } else {
-        [cell.downloadProgressView setProgress:thisEpisode.downloadInProgress];
-        [cell.downloadProgressView setHidden:NO];
-    }
-    
-    if(thisEpisode.currentPlaybackPosition > 0) {
-        [cell.progressView setProgress:thisEpisode.currentPlaybackPosition / thisEpisode.duration animated:YES];
-        [cell.progressView setHidden:NO];
-    } else {
-        [cell.progressView setProgress:0.0];
-        [cell.progressView setHidden:YES];
+        [cell.unplayedIndicator setHidden:YES];
+        //[cell.mainLabel setTextColor:[UIColor lightGrayColor]];
     }
     
     if([[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:thisEpisode.title] && [self.audioPlayer isPlaying]) {
@@ -215,10 +240,10 @@
         [cell setBackgroundColor:[UIColor whiteColor]];
         [cell.progressView setProgressTintColor:[appDelegate lightColor]];
     }
-
+    // Configure the cell...
+    
     return cell;
 }
-
 
 - (void)downloadEpisode:(id) sender
 {
@@ -227,7 +252,7 @@
     while (parent && ![parent isKindOfClass:[DHBAudioTableViewCell class]]) {
         parent = parent.superview;
     }
-        
+    
     DHBAudioTableViewCell *thisParentCell = (DHBAudioTableViewCell *)parent;
     
     NSIndexPath *thisIndexPath = [self.tableView indexPathForCell:thisParentCell];
@@ -263,7 +288,7 @@
     DHBPodcastEpisode *thisEpisode = [episodesForYear objectAtIndex:indexPath.row];
     
     //DHBPodCastEpisode *thisEpisode = [appDelegate.podCast.podcastEpisodes objectAtIndex:indexPath.row];
-    
+
     if(!thisEpisode.isDownloaded) {
         [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
     } else {
@@ -287,14 +312,14 @@
             NSFileManager *fileManager = [[NSFileManager alloc] init];
             fileManager = [NSFileManager defaultManager];
             
-            NSData *audioData = [fileManager contentsAtPath:self.selectedEpisode.cacheFolderPathString];
+            NSData *audioData = [fileManager contentsAtPath:self.selectedEpisode.localPathString];
 
             self.audioPlayer = [[AVAudioPlayer alloc] initWithData:audioData error:nil];
         } else if(![[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:self.selectedEpisode.title]) {
             NSFileManager *fileManager = [[NSFileManager alloc] init];
             fileManager = [NSFileManager defaultManager];
             
-            NSData *audioData = [fileManager contentsAtPath:self.selectedEpisode.cacheFolderPathString];
+            NSData *audioData = [fileManager contentsAtPath:self.selectedEpisode.localPathString];
             
             self.audioPlayer = [[AVAudioPlayer alloc] initWithData:audioData error:nil];
             if([self.audioPlayer isPlaying]) {
@@ -310,7 +335,7 @@
             [self unselectCell:cell];
         } else {
             [[AVAudioSession sharedInstance] setDelegate: self];
-
+            //[[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error: nil];
             [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
             NSError *activationError = nil;
             [[AVAudioSession sharedInstance] setActive: YES error: &activationError];
@@ -380,10 +405,13 @@
         NSMutableArray *episodesForYear = [appDelegate.podcast getEpisodesForYear:[[yearsOfEpisodesArray objectAtIndex:indexPath.section] longValue]];
         
         episodeToDelete = [episodesForYear objectAtIndex:indexPath.row];
+        //episodeToDelete = [appDelegate.podCast.podcastEpisodes objectAtIndex:indexPath.row];
         
         [episodeToDelete deleteEpisode];
         
-        [self.tableView reloadData];
+        NSArray *rowsToReload = [[NSArray alloc] initWithObjects:indexPath, nil];
+        
+        [self.tableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationRight];
     }
 }
 
@@ -441,10 +469,11 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
     
     [UIView animateWithDuration:0.2 animations:^{
         [cell.mainLabel setTextColor:[UIColor whiteColor]];
-        [cell.subLabel setTextColor:[UIColor whiteColor]];
+        [cell.mainLabel setFrame:CGRectMake(20, 5, 200, 25)];
+        [cell.subLabel setFrame:CGRectMake(20, 25, 200, 20)];
         [cell setBackgroundColor:[appDelegate lightColor]];
         [cell.progressView setProgressTintColor:[UIColor whiteColor]];
-        //[cell.progressView setHidden:YES];
+        [cell.progressView setHidden:YES];
         [cell.nowPlayingLabel setHidden:NO];
         
         [cell.nowPlayingLabel setText:[NSString stringWithFormat:@"%02.f:%02.f - %02.f:%02.f", floor(self.selectedEpisode.currentPlaybackPosition / 60), floor(self.selectedEpisode.currentPlaybackPosition) - (floor(self.selectedEpisode.currentPlaybackPosition / 60) * 60), floor(self.audioPlayer.duration / 60), self.audioPlayer.duration - (floor(self.audioPlayer.duration / 60) * 60) ]];
@@ -462,8 +491,11 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
     
     [UIView animateWithDuration:0.2 animations:^{
         [cell.mainLabel setTextColor:[UIColor blackColor]];
-        [cell.subLabel setTextColor:[UIColor lightGrayColor]];
         
+        if([cell.actionButton isHidden]) {
+            [cell.mainLabel setFrame:CGRectMake(20, 5, [[UIScreen mainScreen]bounds].size.width - 30, 25)];
+            [cell.subLabel setFrame:CGRectMake(20, 25, [[UIScreen mainScreen]bounds].size.width - 30, 20)];
+        }
         [cell setBackgroundColor:[UIColor whiteColor]];
         [cell.progressView setProgressTintColor:[appDelegate lightColor]];
         [cell.progressView setHidden:NO];
@@ -471,60 +503,8 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
     }];
 }
 
-- (void)skipBackwardEvent:(UIEvent *) event
-{
-    if(nil != self.audioPlayer)
-    {
-        self.selectedEpisode.currentPlaybackPosition -= 15;
-        [self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
-    
-        [self updateNowPlayingInfoCenter];
-    }
-}
-
-- (void)skipForwardEvent:(UIEvent *) event
-{
-    if(nil != self.audioPlayer)
-    {
-        self.selectedEpisode.currentPlaybackPosition += 15;
-        [self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
-    
-        [self updateNowPlayingInfoCenter];
-    }
-}
-
-- (void)playOrPauseEvent:(UIEvent *) event
-{
-    DHBAudioTableViewCell *cell = (DHBAudioTableViewCell *)[self.tableView cellForRowAtIndexPath:[self.tableView indexPathForSelectedRow]];
-    
-    if(nil != self.audioPlayer)
-    {
-        if([self.audioPlayer isPlaying]) {
-            [self.audioPlayer pause];
-            [self unselectCell:cell];
-        } else {
-            [self.audioPlayer play];
-            [self selectCell:cell];
-        }
-        
-        [self updateNowPlayingInfoCenter];
-    }
-    
-}
-
-- (void)updateNowPlayingInfoCenter
-{
-    [self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
-    
-    NSArray *keys = [NSArray arrayWithObjects:MPMediaItemPropertyArtwork, MPMediaItemPropertyMediaType, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyPodcastPersistentID, MPMediaItemPropertyArtist, MPMediaItemPropertyTitle, MPMediaItemPropertyPodcastTitle, MPMediaItemPropertyPlaybackDuration, MPNowPlayingInfoPropertyPlaybackRate, MPNowPlayingInfoPropertyElapsedPlaybackTime, nil];
-    NSArray *values = [NSArray arrayWithObjects:[[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"dharma talk icon 1024"]], [NSNumber numberWithInteger:MPMediaTypePodcast], @"Mission Dharma - Dharma Talks", @"Mission Dharma - Dharma Talks", self.selectedEpisode.speaker, self.selectedEpisode.title, self.selectedEpisode.title, [NSNumber numberWithFloat:[self.audioPlayer duration]], [NSNumber numberWithInt:1], [NSNumber numberWithFloat:self.selectedEpisode.currentPlaybackPosition], nil];
-    NSDictionary *mediaInfo = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaInfo];
-}
-
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event
 {
-    /*
     if (event.type == UIEventTypeRemoteControl) {
         DHBAudioTableViewCell *cell = (DHBAudioTableViewCell *)[self.tableView cellForRowAtIndexPath:[self.tableView indexPathForSelectedRow]];
         
@@ -562,7 +542,6 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
         [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaInfo];
         
     }
-     */
 }
 
 -(void) updateAudioProgressForCell
