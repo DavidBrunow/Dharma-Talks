@@ -15,95 +15,55 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@class AppDelegate;
+
 #import "DHBAudioTableViewCell.h"
-#import "DHBAppDelegate.h"
+#import "Mission_Dharma-Swift.h"
 
 @implementation DHBAudioTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
+    
+    if (self)
+    {
         // Initialization code
         self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
         [self.progressView setProgress:0.0];
-        DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-        [self.progressView setProgressTintColor:appDelegate.lightColor];
+
+        [self.progressView setProgressTintColor:AppDelegate.lightColor];
         self.downloadProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
         [self.downloadProgressView setProgress:0.0];
-        [self.downloadProgressView setProgressTintColor:appDelegate.darkColor];        
+        [self.downloadProgressView setProgressTintColor:AppDelegate.darkColor];
         
-        self.mainLabel = [[UILabel alloc] init];
-        [self.mainLabel setNumberOfLines:1];
-        self.subLabel = [[UILabel alloc] init];
         self.nowPlayingLabel = [[UILabel alloc] init];
         [self.nowPlayingLabel setHidden:YES];
         self.actionButton = [[UIButton alloc] init];
         self.playPauseButton = [[UIButton alloc] init];
-
-        self.unplayedIndicator = [[UIImageView alloc] init];
-        [self.unplayedIndicator setHidden:YES];
         
         [self addSubview:self.progressView];
         [self addSubview:self.downloadProgressView];
-        [self addSubview:self.mainLabel];
-        [self addSubview:self.subLabel];
+        
         [self addSubview:self.nowPlayingLabel];
         [self addSubview:self.actionButton];
         [self addSubview:self.playPauseButton];
-        [self addSubview:self.unplayedIndicator];
     }
     return self;
 }
 
 - (void)layoutSubviews
 {
-    [self.progressView setFrame:CGRectMake(20, self.frame.size.height - 3, [[UIScreen mainScreen] bounds].size.width - 20, 20)];
-    [self.downloadProgressView setFrame:CGRectMake(20, 0, [[UIScreen mainScreen] bounds].size.width - 20, 20)];
+    [super layoutSubviews];
     
     [self.nowPlayingLabel setFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 90, 12, 80, 26)];
-    [self.actionButton setFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 90, 12, 80, 26)];
-
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-
-    [self.actionButton setTitleColor:appDelegate.darkColor forState:UIControlStateNormal];
-    self.actionButton.layer.cornerRadius = 4;
-    self.actionButton.layer.borderWidth = 1;
-    self.actionButton.layer.borderColor = [appDelegate darkColor].CGColor;
-    [self.actionButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
-    
-    [self.actionButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:10.0]];
-    [self.unplayedIndicator setFrame:CGRectMake(7, (self.frame.size.height / 2) - 2, 8, 8)];
-    [self.unplayedIndicator setImage:[UIImage imageNamed:@"perry-color-circle"]];
     
     [self.playPauseButton setFrame:CGRectMake([[UIScreen mainScreen]bounds].size.width - 100, 10, 90, 45)];
     
-    if([self.actionButton isHidden]) {
-        [self.mainLabel setFrame:CGRectMake(20, 5, [[UIScreen mainScreen]bounds].size.width - 30, 25)];
-        [self.subLabel setFrame:CGRectMake(20, 25, [[UIScreen mainScreen]bounds].size.width - 30, 20)];
-    } else {
-        [self.mainLabel setFrame:CGRectMake(20, 5, 200, 25)];
-        [self.subLabel setFrame:CGRectMake(20, 25, 200, 20)];
-    }
-    
-    [self.mainLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:14.0]];
-    [self.mainLabel setLineBreakMode:NSLineBreakByTruncatingMiddle];
-
-    [self.subLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:12.0]];
-    [self.subLabel setLineBreakMode:NSLineBreakByTruncatingTail];
-    [self.subLabel setTextColor:[UIColor lightGrayColor]];
-    [self.subLabel setTextColor:[UIColor darkGrayColor]];
-    
-    
-    [self.nowPlayingLabel setFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 90, 12, 80, 26)];
-    [self.nowPlayingLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:12.0]];
-    [self.nowPlayingLabel setTextColor:[UIColor whiteColor]];
-    [self.nowPlayingLabel setTextAlignment:NSTextAlignmentCenter];
     
     [self.progressView setUserInteractionEnabled:NO];
     [self.downloadProgressView setUserInteractionEnabled:NO];
-    [self.mainLabel setUserInteractionEnabled:NO];
-    [self.subLabel setUserInteractionEnabled:NO];
+    
     [self.nowPlayingLabel setUserInteractionEnabled:NO];
     [self.actionButton setUserInteractionEnabled:YES];
     [self.playPauseButton setUserInteractionEnabled:NO];

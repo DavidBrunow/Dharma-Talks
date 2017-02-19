@@ -15,10 +15,12 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@class AppDelegate;
+
 #import "DHBPodcast.h"
-#import <libxml2/libxml/HTMLparser.h>
 #import "DHBPodcastEpisode.h"
-#import "DHBAppDelegate.h"
+//#import <libxml2/libxml/HTMLparser.h>
+#import "Mission_Dharma-Swift.h"
 
 @implementation DHBPodcast
 
@@ -27,8 +29,6 @@
     self.podcastEpisodes = [[NSMutableArray alloc] init];
     [self setPodcastRootURLString:@"http://www.missiondharma.org"];
     
-    [self loadEpisodes];
-    
     return self;
 }
 
@@ -36,8 +36,8 @@
 {
     //self.podcastEpisodes = [[NSMutableArray alloc] init];
     [self setHasLoadedEpisodes:NO];
-    
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    NSLog(@"Load episodes is being called");
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     if(0 == self.podcastEpisodes.count)
     {
@@ -71,21 +71,28 @@
                 
                 [self.podcastEpisodes addObject:episode];
             }
-        }        
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"Episodes Fetched From Local Database" object:nil];
     }
     
     [self setPodcastURLString:@"http://www.missiondharma.org/dharma-talks.html"];
-    [self setPodcastURLString:@"http://api.brunow.org/node/dharma-talks-v1/talks"];
+    [self setPodcastURLString:@"https://api.brunow.org/node/dharma-talks-v1/talks"];
     
     self.podcastData = [[NSMutableData alloc] init];
     
     NSString *podcastURLString = [NSString stringWithFormat:@"http://www.missiondharma.org/dharma-talks.html"];
     
-    podcastURLString = @"http://api.brunow.org/node/dharma-talks-v1/talks";
+    podcastURLString = @"https://api.brunow.org/node/dharma-talks-v1/talks";
     
     NSURLRequest *podcastURLRequest  = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:podcastURLString]];
-    (void)[[NSURLConnection alloc] initWithRequest:podcastURLRequest delegate:self];
     
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:podcastURLRequest delegate:self startImmediately:NO];
+    
+    [connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    [connection start];
+    
+    NSLog(@"Initing connection!");
     NSSortDescriptor *sortDescriptor;
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"recordDate"
                                                  ascending:NO];
@@ -96,6 +103,17 @@
     self.podcastEpisodes = [[NSMutableArray alloc] initWithArray:sortedArray];
     
     [self setHasLoadedEpisodes:YES];
+}
+
+-(void)downloadAllTalks
+{
+    for(DHBPodcastEpisode *episode in self.podcastEpisodes)
+    {
+        if(!episode.isDownloaded)
+        {
+            [episode downloadEpisode];
+        }
+    }
 }
 
 -(NSMutableArray *)getUniqueYearsOfEpisodes
@@ -127,12 +145,14 @@
 {
     NSMutableArray *episodesForYear = [[NSMutableArray alloc] init];
     
-    for(int x = 0; x < self.podcastEpisodes.count; x++) {
+    for(int x = 0; x < self.podcastEpisodes.count; x++)
+    {
         DHBPodcastEpisode *thisEpisode = [self.podcastEpisodes objectAtIndex:x];
         
         NSDateComponents *thisComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:thisEpisode.recordDate];
         
-        if([thisComponents year] == year) {
+        if([thisComponents year] == year)
+        {
             [episodesForYear addObject:thisEpisode];
         }
     }
@@ -142,30 +162,29 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    NSLog(@"Did receive response: %@", response);
+    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
+    NSLog(@"Did receive data");
     [self.podcastData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    
-    [self parseEpisodes];
+    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    NSLog(@"Connection did finish loading");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self parseEpisodes];
+    });
     
 }
 
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"%@", error);
-}
-
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
-{
-    return nil;
 }
 
 -(NSMutableArray *) getAllRangesOfString:(NSString *) stringToFind inString:(NSString *) input
@@ -190,9 +209,9 @@
 
 -(void) parseEpisodes
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
-    if([self.podcastURLString isEqualToString:@"http://api.brunow.org/node/dharma-talks-v1/talks"])
+    if([self.podcastURLString isEqualToString:@"https://api.brunow.org/node/dharma-talks-v1/talks"])
     {     
         NSMutableArray *podcastArray = [NSJSONSerialization JSONObjectWithData:self.podcastData options:0 error:nil];
         NSError *error;
@@ -267,180 +286,6 @@
             }
         }
     }
-    else
-    {
-        
-        NSString *podcastHTML = [[NSString alloc] initWithData:self.podcastData encoding:NSUTF8StringEncoding];
-        
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<br />" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<u>" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<u style=\"color: rgb(63, 63, 63);\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<u style=\"\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"</u>" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<em style=\"\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<em>" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"</em>" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font color=\"#000000\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font color=\"#2a2a2a\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font color=\"#333333\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font color=\"#333333\" style=\"line-height: 1.5;\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font color=\"#3f3f3f\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font color=\"#666666\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font size=\"2\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font size=\"3\">" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<font size=4>" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"</font>" withString:@""];
-        podcastHTML = [podcastHTML stringByReplacingOccurrencesOfString:@"<span></span>" withString:@""];
-        
-        //recentPodcastListRange = [podcastHTML rangeOfString:@"<div class=\"paragraph\" style=\"text-align:left;\">"];
-        
-        //find index of hr, then find the first <div class="content" after that
-        //NSRange firstRange = [podcastHTML rangeOfString:@"<hr"];
-        NSMutableArray *hrRangeArray = [self getAllRangesOfString:@"<hr" inString:podcastHTML];
-        NSMutableArray *trimmedPodcastHTMLArray = [[NSMutableArray alloc] init];
-        
-        for(NSValue *thisValue in hrRangeArray) {
-            NSString *trimmedPodcastHTML = @"";
-            
-            NSRange recentPodcastListRange = [podcastHTML rangeOfString:@"<div class=\"paragraph\"" options:NSCaseInsensitiveSearch range:NSMakeRange([thisValue rangeValue].location, podcastHTML.length - [thisValue rangeValue].location)];
-            
-            if(recentPodcastListRange.location != NSNotFound) {
-                NSRange recentPodcastListRangeEnd = [podcastHTML rangeOfString:@"</div>" options:NSCaseInsensitiveSearch range:NSMakeRange(recentPodcastListRange.location, podcastHTML.length - recentPodcastListRange.location)];
-                
-                trimmedPodcastHTML = [podcastHTML substringWithRange:NSMakeRange(recentPodcastListRange.location, recentPodcastListRangeEnd.location - recentPodcastListRange.location + 6)];
-                [trimmedPodcastHTMLArray addObject:trimmedPodcastHTML];
-            }
-        }
-        
-        
-        //NSLog(@"HTML: %@", trimmedPodcastHTML);
-        for(NSString *trimmedPodcastHTML in trimmedPodcastHTMLArray) {
-            //NSLog(@"Trimmed HTML: %@", trimmedPodcastHTML);
-            const char *charData = [trimmedPodcastHTML UTF8String];
-            htmlParserCtxtPtr parser = htmlCreatePushParserCtxt(NULL, NULL, NULL, 0, NULL, 0);
-            htmlCtxtUseOptions(parser, HTML_PARSE_NOBLANKS | HTML_PARSE_NONET);
-            
-            //NSLog(@"Char Data : %s\n", charData);
-            
-            // char * data : buffer containing part of the web page
-            // int len : number of bytes in data
-            // Last argument is 0 if the web page isn’t complete, and 1 for the final call.
-            htmlParseChunk(parser, charData, (int)[trimmedPodcastHTML lengthOfBytesUsingEncoding:NSUTF8StringEncoding], 0);
-            
-            htmlParseChunk(parser, NULL, 0, 1);
-            
-            int currentNodeIndex = 0;
-            NSString *lastNode = @"";
-            
-            xmlNode *cur_node = xmlDocGetRootElement(parser->myDoc);
-            xmlAttr *this_node;
-            
-            //DHBPodCastEpisode *podCastEpisode = [[DHBPodCastEpisode alloc] init];
-            NSManagedObjectContext *context = [appDelegate managedObjectContext];
-            DHBPodcastEpisode *podcastEpisode = [NSEntityDescription insertNewObjectForEntityForName:@"PodcastEpisode" inManagedObjectContext:context];
-            
-            //NSError *error;
-            //if (![context save:&error]) {
-            //    NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-            //}
-            
-            
-            while (cur_node != nil) {
-                //printf("Outer Loop : %s\n", cur_node->name);
-                
-                if (!(xmlStrcmp(cur_node->name, (const xmlChar *)"a")) || !(xmlStrcmp(cur_node->name, (const xmlChar *)"text"))) {
-                    //NSLog(@"%d", self.currentNodeIndex);
-                    //printf("Inner If: %s\n", cur_node->name);
-                    NSString *tempString;
-                    
-                    
-                    if (!xmlStrcmp(cur_node->name, (const xmlChar *)"a")) {
-                        this_node = cur_node->properties;
-                        
-                        if(!xmlStrcmp(this_node->name, (const xmlChar *)"href")) {
-                            tempString = [NSString stringWithFormat:@"%@%s", self.podcastRootURLString, this_node->children->content];
-                        } else if(!xmlStrcmp(this_node->next->name, (const xmlChar *)"href")) {
-                            tempString = [NSString stringWithFormat:@"%@%s", self.podcastRootURLString, this_node->next->children->content];
-                        } else if(!xmlStrcmp(this_node->next->next->name, (const xmlChar *)"href")) {
-                            tempString = [NSString stringWithFormat:@"%@%s", self.podcastRootURLString, this_node->next->next->children->content];
-                        }
-                        
-                        [podcastEpisode setURLString:tempString];
-                        //NSLog(@"Temp String: %@", tempString);
-                        
-                        if(!xmlStrcmp(cur_node->children->name, (const xmlChar *)"text")) {
-                            [podcastEpisode parseInfo:[NSString stringWithFormat:@"%s", cur_node->children->content]];
-                        }
-                        //if(this_node != nil) {
-                        
-                        //}
-                        
-                    }
-                    
-                    if(podcastEpisode.title != nil) {
-                        currentNodeIndex++;
-                    }
-                    
-                    //NSLog(@"Podcast URL: %@, and Title: %@", podCastEpisode.URLString, podCastEpisode.title);
-                    lastNode = [NSString stringWithFormat:@"%s", cur_node->name];
-                    
-                } else {
-                }
-                //NSLog(@"Current Node Index: %d", currentNodeIndex);
-                if(currentNodeIndex == 1 && podcastEpisode.title != nil) {
-                    bool isPresentInArray = false;
-                    
-                    for(DHBPodcastEpisode *thisEpisode in self.podcastEpisodes) {
-                        if([thisEpisode.title isEqualToString:podcastEpisode.title] && [thisEpisode.recordDate isEqualToDate:podcastEpisode.recordDate]) {
-                            isPresentInArray = true;
-                        }
-                        
-                        if(isPresentInArray)
-                        {
-                            break;
-                        }
-                    }
-                    
-                    if(!isPresentInArray && podcastEpisode.title != nil && podcastEpisode.recordDate != nil) {
-                        NSError *error;
-                        [podcastEpisode setIsUnplayed:YES];
-                        
-                        if (![context save:&error]) {
-                            NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-                        }
-                        
-                        [self.podcastEpisodes addObject:podcastEpisode];
-                    }
-                    
-                    currentNodeIndex = 0;
-                    podcastEpisode = [NSEntityDescription insertNewObjectForEntityForName:@"PodcastEpisode" inManagedObjectContext:context];
-                }
-                if (cur_node->next == nil && cur_node->children != nil) {
-                    cur_node = cur_node->children;
-                } else if(cur_node->children != nil) {
-                    cur_node = cur_node->children;
-                } else if(cur_node->next != nil) {
-                    cur_node = cur_node->next;
-                } else if(cur_node->children == nil) {
-                    if(cur_node->parent->next != nil) {
-                        cur_node = cur_node->parent->next;
-                    } else if(cur_node->parent->parent->next != nil) {
-                        cur_node = cur_node->parent->parent->next;
-                    } else if (cur_node->parent->parent->parent->next != nil) {
-                        cur_node = cur_node->parent->parent->parent->next;
-                    } else if (cur_node->parent->parent->parent->parent->next != nil) {
-                        cur_node = cur_node->parent->parent->parent->parent->next;
-                    } else {
-                        cur_node = nil;
-                    }
-                }
-                
-            }
-            xmlFreeDoc(parser->myDoc);
-            xmlFreeParserCtxt(parser);
-        }
-    }
     
     self.podcastData = nil;
     
@@ -454,7 +299,8 @@
     self.podcastEpisodes = [[NSMutableArray alloc] initWithArray:sortedArray];
     
     [self setHasLoadedEpisodes:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"Episodes Fetched From Local Database" object:nil];
 }
-
 
 @end

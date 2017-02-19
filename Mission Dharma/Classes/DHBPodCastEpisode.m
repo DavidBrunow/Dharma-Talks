@@ -15,8 +15,10 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@class AppDelegate;
+
 #import "DHBPodcastEpisode.h"
-#import "DHBAppDelegate.h"
+#import "Mission_Dharma-Swift.h"
 
 @implementation DHBPodcastEpisode
 
@@ -38,7 +40,7 @@
 {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     fileManager = [NSFileManager defaultManager];
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     self.cacheFolderPathString = [NSString stringWithFormat:@"%@/%@", appDelegate.applicationHome, [self.localPathString lastPathComponent]];
     
@@ -53,7 +55,7 @@
 
 -(void)save
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     NSManagedObjectContext *context = [appDelegate managedObjectContext];
     
@@ -126,7 +128,7 @@
 
 -(void) downloadEpisode
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     /* if(!appDelegate.isConnectedViaWifi) {
         UIAlertView * alert  = [[UIAlertView alloc] initWithTitle:@"Not Connected to Wifi" message:[NSString stringWithFormat:@"Sorry, due to the size of each episode, they can only be downloaded if you are connected to wifi."] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil ];
@@ -151,7 +153,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
     int statusCode = (int)[response statusCode];
     if (statusCode == 200) {
@@ -167,7 +169,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    //[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
 

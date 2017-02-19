@@ -15,12 +15,21 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <MediaPlayer/MediaPlayer.h>
-#import "DHBAudioTableViewController.h"
-#import "DHBAppDelegate.h"
+@class AppDelegate;
+
+#import "DHBPodcast.h"
 #import "DHBAudioTableViewCell.h"
+#import "DHBAudioTableViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
+#import "Mission_Dharma-Swift.h"
 
 @interface DHBAudioTableViewController ()
+@property (strong, nonatomic) IBOutlet UIView *tableFooterView;
+
+@property (strong, nonatomic) AVAudioEngine *audioEngine;
+@property (strong, nonatomic) AVAudioFile *audioFile;
+@property (strong, nonatomic) AVAudioPlayerNode *audioPlayerNode;
+@property (strong, nonatomic) AVAudioOutputNode *audioOutputNode;
 
 @end
 
@@ -38,73 +47,75 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    [refreshControl setTintColor:appDelegate.lightColor];
+
+    [refreshControl setTintColor: AppDelegate.lightColor];
     [refreshControl addTarget:self action:@selector(refreshTable) forControlEvents:UIControlEventValueChanged];
 
     [self setRefreshControl:refreshControl];
     
-    [self.tableView setRowHeight:50.0];
-    [self.tableView setSeparatorInset:UIEdgeInsetsMake(0, 20, 0, 0)];
-    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+    [self.tableView setEstimatedRowHeight:100.0];
+
+    [self.tableView setRowHeight:UITableViewAutomaticDimension];
     
-    //making the height of this view zero so that you have to pull up to see the footer
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 0)];
-    
-    UIImageView *ivTexas = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"perry-color-texas"]];
-    [ivTexas setFrame:CGRectMake(20, 30, 31, 30)];
-    
-    UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(60, 25, [[UIScreen mainScreen] bounds].size.width, 35)];
-    [lblName setText:[NSString stringWithFormat:@"David Brunow\n@davidbrunow\nhelloDavid@brunow.org"]];
-    [lblName setText:[NSString stringWithFormat:@"Designed and Developed in Texas\nby David Brunow"]];
-    [lblName setTextColor:[UIColor blackColor]];
-    
-    [lblName setTextColor:appDelegate.lightColor];
-    
-    [lblName setFont:[UIFont fontWithName:@"HelveticaNeue" size:11.0]];
-    [lblName setBackgroundColor:[UIColor clearColor]];
-    [lblName setNumberOfLines:2];
-    
-    [lblName setTextAlignment:NSTextAlignmentLeft];
-    
-    [footerView addSubview:ivTexas];
-    [footerView addSubview:lblName];
-    
-    [self.tableView setTableFooterView:footerView];
+    self.tableView.tableFooterView = self.tableFooterView;
+    //[self.tableView setTableFooterView:footerView];
 }
 
 - (void) refreshTable
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
-    [appDelegate.podcast loadEpisodes];
+    dispatch_async(dispatch_get_main_queue(), ^(void)
+    {
+        [appDelegate.podcast loadEpisodes];
+    });
+}
+
+- (void) reloadTable
+{
+    NSLog(@"reloading table based on notification!");
+    dispatch_async(dispatch_get_main_queue(), ^(void)
+    {
+        [[self refreshControl] endRefreshing];
+        [self.tableView reloadData];
+    });
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"Episodes Fetched From Local Database" object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     [appDelegate.podcast addObserver:self forKeyPath:@"hasLoadedEpisodes" options:NSKeyValueObservingOptionNew context:nil];
     
-    if([self.tableView numberOfRowsInSection:0] == 0) {
+    if([self.tableView numberOfRowsInSection:0] == 0)
+    {
         [self.tableView setContentOffset:CGPointMake(0, -100) animated:YES];
         [[self refreshControl] beginRefreshing];
-    } else {
+    }
+    else
+    {
     }
 }
 
 -(void) viewDidDisappear:(BOOL)animated
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     [appDelegate.podcast removeObserver:self forKeyPath:@"hasLoadedEpisodes"];
 }
@@ -120,7 +131,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
 
@@ -129,7 +140,7 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
     
@@ -139,10 +150,8 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
     // Background color
-    view.tintColor = [appDelegate lightColor];
+    view.tintColor = AppDelegate.lightColor;
     
     // Text Color
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
@@ -151,7 +160,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
     NSMutableArray *episodesForYear = [appDelegate.podcast getEpisodesForYear:[[yearsOfEpisodesArray objectAtIndex:section] longValue]];
@@ -161,36 +170,44 @@
 
 - (DHBAudioTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     static NSString *CellIdentifier = @"episodeCell";
 
     DHBAudioTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     [cell setParentTableView:self.tableView];
     
-    if (cell == nil) {
+    if (cell == nil)
+    {
         cell = [[DHBAudioTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
+    
     NSMutableArray *episodesForYear = [appDelegate.podcast getEpisodesForYear:[[yearsOfEpisodesArray objectAtIndex:indexPath.section] longValue]];
     
     DHBPodcastEpisode *thisEpisode = [episodesForYear objectAtIndex:indexPath.row];
+
+    cell.mainLabel.text = [NSString stringWithFormat:@"%@", thisEpisode.title];
     
-    cell.mainLabel.Text = [NSString stringWithFormat:@"%@", thisEpisode.title];
-    
-    if(thisEpisode.currentPlaybackPosition > 0) {
+    if(thisEpisode.currentPlaybackPosition > 0)
+    {
         [cell.progressView setProgress:thisEpisode.currentPlaybackPosition / thisEpisode.duration animated:YES];
         [cell.progressView setHidden:NO];
-    } else {
+    }
+    else
+    {
         [cell.progressView setProgress:0.0];
         [cell.progressView setHidden:YES];
     }
     
-    if(thisEpisode.downloadInProgress == 0 || thisEpisode.downloadInProgress == 1.0) {
+    if(thisEpisode.downloadInProgress == 0 || thisEpisode.downloadInProgress == 1.0)
+    {
         [cell.downloadProgressView setProgress:0.0];
         [cell.downloadProgressView setHidden:YES];
-    } else {
+    }
+    else
+    {
         [cell.downloadProgressView setProgress:thisEpisode.downloadInProgress];
         [cell.downloadProgressView setHidden:NO];
     }
@@ -208,14 +225,17 @@
         recordDateString = @"Date Unavailable";
     }
     
-    cell.subLabel.Text = [NSString stringWithFormat:@"%@ - %@", recordDateString, thisEpisode.speaker];
+    cell.subLabel.text = [NSString stringWithFormat:@"%@ - %@", recordDateString, thisEpisode.speaker];
     
-    if(thisEpisode.isDownloaded) {
+    if(thisEpisode.isDownloaded)
+    {
         //[cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [cell.actionButton setTitle:@"" forState:UIControlStateNormal];
         [cell.actionButton setHidden:YES];
         [cell.progressView setHidden:NO];
-    } else {
+    }
+    else
+    {
         //[cell setAccessoryType:UITableViewCellAccessoryNone];
         [cell.actionButton setTitle:@"DOWNLOAD" forState:UIControlStateNormal];
         [cell.actionButton setHidden:NO];
@@ -223,33 +243,38 @@
         [cell.progressView setHidden:YES];
     }
     
-    if(thisEpisode.isUnplayed) {
+    if(thisEpisode.isUnplayed)
+    {
         [cell.unplayedIndicator setHidden:NO];
-        //[cell.mainLabel setTextColor:[UIColor darkGrayColor]];
-    } else {
+    }
+    else
+    {
         [cell.unplayedIndicator setHidden:YES];
-        //[cell.mainLabel setTextColor:[UIColor lightGrayColor]];
     }
     
-    if([[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:thisEpisode.title] && [self.audioPlayer isPlaying]) {
+    if([[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:thisEpisode.title] && [self.audioPlayer isPlaying])
+    {
         [cell.mainLabel setTextColor:[UIColor whiteColor]];
-        [cell setBackgroundColor:[appDelegate lightColor]];
+        [cell setBackgroundColor:AppDelegate.lightColor];
         [cell.progressView setProgressTintColor:[UIColor whiteColor]];
-    } else {
+    }
+    else
+    {
         [cell.mainLabel setTextColor:[UIColor blackColor]];
         [cell setBackgroundColor:[UIColor whiteColor]];
-        [cell.progressView setProgressTintColor:[appDelegate lightColor]];
+        [cell.progressView setProgressTintColor:AppDelegate.lightColor];
     }
-    // Configure the cell...
     
     return cell;
 }
 
 - (void)downloadEpisode:(id) sender
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     UIView *parent = [sender superview];
-    while (parent && ![parent isKindOfClass:[DHBAudioTableViewCell class]]) {
+    
+    while (parent && ![parent isKindOfClass:[DHBAudioTableViewCell class]])
+    {
         parent = parent.superview;
     }
     
@@ -280,7 +305,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
     NSMutableArray *episodesForYear = [appDelegate.podcast getEpisodesForYear:[[yearsOfEpisodesArray objectAtIndex:indexPath.section] longValue]];
@@ -289,15 +314,20 @@
     
     //DHBPodCastEpisode *thisEpisode = [appDelegate.podCast.podcastEpisodes objectAtIndex:indexPath.row];
 
-    if(!thisEpisode.isDownloaded) {
+    if(!thisEpisode.isDownloaded)
+    {
         [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
-    } else {
+    }
+    else
+    {
         DHBAudioTableViewCell *cell = (DHBAudioTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
         
         [cell setSelected:YES animated:YES];
         
-        for (DHBAudioTableViewCell *thisCell in [tableView visibleCells]) {
-            if(thisCell != cell) {
+        for (DHBAudioTableViewCell *thisCell in [tableView visibleCells])
+        {
+            if(thisCell != cell)
+            {
                 [thisCell setSelected:NO animated:YES];
                 [self unselectCell:thisCell];
             }
@@ -308,32 +338,26 @@
 
         self.selectedEpisode = thisEpisode;
         
-        if(self.audioPlayer == nil) {
-            NSFileManager *fileManager = [[NSFileManager alloc] init];
-            fileManager = [NSFileManager defaultManager];
-            
-            NSData *audioData = [fileManager contentsAtPath:self.selectedEpisode.localPathString];
-
-            self.audioPlayer = [[AVAudioPlayer alloc] initWithData:audioData error:nil];
-        } else if(![[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:self.selectedEpisode.title]) {
-            NSFileManager *fileManager = [[NSFileManager alloc] init];
-            fileManager = [NSFileManager defaultManager];
-            
-            NSData *audioData = [fileManager contentsAtPath:self.selectedEpisode.localPathString];
-            
-            self.audioPlayer = [[AVAudioPlayer alloc] initWithData:audioData error:nil];
-            if([self.audioPlayer isPlaying]) {
-                [self.audioPlayer pause];
+        if(![[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:self.selectedEpisode.title])
+        {
+            if([self.audioPlayerNode isPlaying])
+            {
+                [self.audioPlayerNode pause];
                 [cell.actionButton setTitle:@"" forState:UIControlStateNormal];
                 [self unselectCell:cell];
             }
         }
         
-        if([self.audioPlayer isPlaying]) {
-            [self.audioPlayer pause];
+        if([self.audioPlayerNode isPlaying])
+        {
+            [self.audioPlayerNode pause];
             [cell.actionButton setTitle:@"" forState:UIControlStateNormal];
             [self unselectCell:cell];
-        } else {
+        }
+        else
+        {
+            [self playEpisode: self.selectedEpisode];
+            /*
             [[AVAudioSession sharedInstance] setDelegate: self];
             //[[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error: nil];
             [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
@@ -355,25 +379,94 @@
             [self.audioPlayer setNumberOfLoops:0];
             [self.audioPlayer setDelegate:self];
             [self.audioPlayer prepareToPlay];
+            */
             
-            NSArray *keys = [NSArray arrayWithObjects:MPMediaItemPropertyArtwork, MPMediaItemPropertyMediaType, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyPodcastPersistentID, MPMediaItemPropertyArtist, MPMediaItemPropertyTitle, MPMediaItemPropertyPodcastTitle, MPMediaItemPropertyPlaybackDuration, MPNowPlayingInfoPropertyPlaybackRate, MPNowPlayingInfoPropertyElapsedPlaybackTime, nil];
-            NSArray *values = [NSArray arrayWithObjects:[[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"dharma talk icon 1024"]], [NSNumber numberWithInteger:MPMediaTypePodcast], @"Mission Dharma - Dharma Talks", @"Mission Dharma - Dharma Talks", self.selectedEpisode.speaker, self.selectedEpisode.title, self.selectedEpisode.title, [NSNumber numberWithFloat:[self.audioPlayer duration]], [NSNumber numberWithInt:1], [NSNumber numberWithFloat:self.selectedEpisode.currentPlaybackPosition], nil];
-            NSDictionary *mediaInfo = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-            [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaInfo];
-            
+            /*
             [self.audioPlayer play];
+             */
             [self selectCell:cell];
             
         }
     }
 }
 
+- (void) playEpisode:(DHBPodcastEpisode *) episode
+{
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    self.audioEngine = [[AVAudioEngine alloc] init];
+    self.audioPlayerNode = [[AVAudioPlayerNode alloc] init];
+    
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioRouteChangeListenerCallback:) name:AVAudioSessionRouteChangeNotification object:nil];
+    
+    [self.audioEngine attachNode:self.audioPlayerNode];
+    
+    AVAudioMixerNode *mixerNode = [self.audioEngine mainMixerNode];
+    
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    
+    [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [audioSession setActive:true error:nil];
+    
+    NSString *fullPathString = [NSString stringWithFormat:@"%@/%@", appDelegate.applicationHome, episode.localPathString];
+    NSURL *localFileURL = [[NSURL alloc] initFileURLWithPath:fullPathString];
+    self.audioFile = [[AVAudioFile alloc] initForReading:localFileURL error:nil];
+    
+    if(episode.currentPlaybackPosition > 5)
+    {
+        episode.currentPlaybackPosition = episode.currentPlaybackPosition - 5;
+        
+        [self.audioFile setFramePosition:(episode.currentPlaybackPosition * self.audioFile.processingFormat.sampleRate)];
+        
+        //[self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
+    }
+    
+    AVAudioPCMBuffer *audioPCMBuffer = [self createAndLoadBuffer];
+    
+    [self.audioEngine connect:self.audioPlayerNode to:mixerNode format:audioPCMBuffer.format];
+    
+    [self scheduleBuffer:audioPCMBuffer];
+    
+    [self.audioEngine startAndReturnError:nil];
+    [self.audioPlayerNode play];
+    
+    [self setNowPlayingInfoCenterInfo];
+}
+
+- (void) scheduleBuffer: (AVAudioPCMBuffer *) buffer
+{
+    [self.audioPlayerNode scheduleBuffer:buffer atTime:nil options:AVAudioPlayerNodeBufferInterruptsAtLoop completionHandler:^
+     {
+         if([self.audioPlayerNode isPlaying])
+         {
+             [self loadBuffer];
+         }
+     }];
+}
+
+- (void) loadBuffer
+{
+    AVAudioPCMBuffer *buffer = [self createAndLoadBuffer];
+    
+    [self scheduleBuffer:buffer];
+}
+
+- (AVAudioPCMBuffer *) createAndLoadBuffer
+{
+    AVAudioPCMBuffer *audioPCMBuffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:self.audioFile.processingFormat frameCapacity:self.audioFile.processingFormat.sampleRate];
+    
+    [self.audioFile readIntoBuffer:audioPCMBuffer error:nil];
+    
+    return audioPCMBuffer;
+}
+
 // Override to support conditional editing of the table view.
 // This only needs to be implemented if you are going to be returning NO
 // for some items. By default, all items are editable.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
     // Return YES if you want the specified item to be editable.
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
     NSMutableArray *episodesForYear = [appDelegate.podcast getEpisodesForYear:[[yearsOfEpisodesArray objectAtIndex:indexPath.section] longValue]];
     
@@ -382,7 +475,8 @@
     
     bool canEditRow = NO;
     
-    if((thisEpisode.isDownloaded && ![[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:thisEpisode.title] && [self.audioPlayer isPlaying]) || (thisEpisode.isDownloaded && ![self.audioPlayer isPlaying])) {
+    if((thisEpisode.isDownloaded && ![[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:thisEpisode.title] && [self.audioPlayerNode isPlaying]) || (thisEpisode.isDownloaded && ![self.audioPlayerNode isPlaying]))
+    {
         canEditRow = YES;
     }
     
@@ -395,10 +489,12 @@
 }
 
 // Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
         //add code here for when you hit delete
-        DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
         NSManagedObjectContext *context = [appDelegate managedObjectContext];
         DHBPodcastEpisode *episodeToDelete = [NSEntityDescription insertNewObjectForEntityForName:@"PodcastEpisode" inManagedObjectContext:context];
         NSMutableArray *yearsOfEpisodesArray = [appDelegate.podcast getUniqueYearsOfEpisodes];
@@ -422,26 +518,54 @@
     
     NSString *portName = [[outputs objectAtIndex:0] portName];
     
-    if ([portName isEqualToString:@"Headphones"]) {
+    if ([portName isEqualToString:@"Headphones"])
+    {
         return YES;
     }
     
     return NO;
 }
 
-- (void) audioRouteChangeListenerCallback
+- (void) audioRouteChangeListenerCallback: (NSNotification *) notification
 {
-    [self.audioPlayer pause];
+    NSUInteger routeChangeReason = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+    NSLog(@"Route Change Reason: %lu", (unsigned long)routeChangeReason);
+    
+    if(routeChangeReason == AVAudioSessionRouteChangeReasonNewDeviceAvailable)
+    {
+        NSLog(@"route change reason was new device available!");
+        [self.audioPlayerNode pause];
+        [self playEpisode:self.selectedEpisode];
+    }
+    else if (routeChangeReason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable)
+    {
+        NSLog(@"route change reason was old device unavailable");
+        [self.audioPlayerNode pause];
+    }
+    else if (routeChangeReason == AVAudioSessionRouteChangeReasonCategoryChange)
+    {
+        NSLog(@"route change reason was category change");
+    }
+    else if (routeChangeReason == AVAudioSessionRouteChangeReasonOverride)
+    {
+        NSLog(@"route change reason was route override");
+    }
 }
-
+/*
 void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID inPropertyID, UInt32 inPropertyValueSize, const void *inPropertyValue) {
-    if (inPropertyID != kAudioSessionProperty_AudioRouteChange) return; // 5
+    if (inPropertyID != kAudioSessionProperty_AudioRouteChange)
+    {
+         return; // 5
+    }
     
     DHBAudioTableViewController *controller = (__bridge DHBAudioTableViewController *) inUserData; // 6
     
-    if (controller.audioPlayer.playing == 0 ) {                      // 7
+    if (controller.audioPlayer.playing == 0 )
+    {                      // 7
         return;
-    } else {
+    }
+    else
+    {
         CFDictionaryRef routeChangeDictionary = inPropertyValue;        // 8
         CFNumberRef routeChangeReasonRef =
         CFDictionaryGetValue (
@@ -455,28 +579,40 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
                           );
         
         if (routeChangeReason ==
-            kAudioSessionRouteChangeReason_OldDeviceUnavailable) {  // 9
+            kAudioSessionRouteChangeReason_OldDeviceUnavailable)
+        {  // 9
             
             [controller.audioPlayer pause];
             
         }
     }
 }
-
+*/
 -(void)selectCell:(DHBAudioTableViewCell *) cell
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.2 animations:^
+    {
         [cell.mainLabel setTextColor:[UIColor whiteColor]];
-        [cell.mainLabel setFrame:CGRectMake(20, 5, 200, 25)];
-        [cell.subLabel setFrame:CGRectMake(20, 25, 200, 20)];
-        [cell setBackgroundColor:[appDelegate lightColor]];
+        [cell setBackgroundColor:AppDelegate.lightColor];
         [cell.progressView setProgressTintColor:[UIColor whiteColor]];
         [cell.progressView setHidden:YES];
         [cell.nowPlayingLabel setHidden:NO];
         
-        [cell.nowPlayingLabel setText:[NSString stringWithFormat:@"%02.f:%02.f - %02.f:%02.f", floor(self.selectedEpisode.currentPlaybackPosition / 60), floor(self.selectedEpisode.currentPlaybackPosition) - (floor(self.selectedEpisode.currentPlaybackPosition / 60) * 60), floor(self.audioPlayer.duration / 60), self.audioPlayer.duration - (floor(self.audioPlayer.duration / 60) * 60) ]];
+        //[cell.nowPlayingLabel setText:[NSString stringWithFormat:@"%02.f:%02.f - %02.f:%02.f", floor(self.selectedEpisode.currentPlaybackPosition / 60), floor(self.selectedEpisode.currentPlaybackPosition) - (floor(self.selectedEpisode.currentPlaybackPosition / 60) * 60), floor(self.audioPlayer.duration / 60), self.audioPlayer.duration - (floor(self.audioPlayer.duration / 60) * 60) ]];
+        
+        double sampleRate = self.audioFile.processingFormat.sampleRate;
+        NSTimeInterval episodeLength = self.audioFile.length / sampleRate;
+        
+        [self.selectedEpisode setDuration:episodeLength];
+        
+        if(self.selectedEpisode.currentPlaybackPosition > episodeLength)
+        {
+            self.selectedEpisode.currentPlaybackPosition = episodeLength;
+        }
+        
+        [self.selectedEpisode save];
+        
+        [cell.nowPlayingLabel setText:[NSString stringWithFormat:@"%02.f:%02.f - %02.f:%02.f", floor(self.selectedEpisode.currentPlaybackPosition / 60), floor(self.selectedEpisode.currentPlaybackPosition) - (floor(self.selectedEpisode.currentPlaybackPosition / 60) * 60), floor(episodeLength / 60), ((episodeLength / 60) - floor(episodeLength / 60)) * 60 ]];
     }];
     
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateAudioProgressForCell) userInfo:cell repeats:YES];
@@ -484,20 +620,15 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
 
 -(void)unselectCell:(DHBAudioTableViewCell *) cell
 {
-    DHBAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
     [self.timer invalidate];
     self.timer = nil;
     
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.2 animations:^
+    {
         [cell.mainLabel setTextColor:[UIColor blackColor]];
         
-        if([cell.actionButton isHidden]) {
-            [cell.mainLabel setFrame:CGRectMake(20, 5, [[UIScreen mainScreen]bounds].size.width - 30, 25)];
-            [cell.subLabel setFrame:CGRectMake(20, 25, [[UIScreen mainScreen]bounds].size.width - 30, 20)];
-        }
         [cell setBackgroundColor:[UIColor whiteColor]];
-        [cell.progressView setProgressTintColor:[appDelegate lightColor]];
+        [cell.progressView setProgressTintColor:AppDelegate.lightColor];
         [cell.progressView setHidden:NO];
         [cell.nowPlayingLabel setHidden:YES];
     }];
@@ -510,64 +641,100 @@ void audioRouteChangeListenerCallback (void *inUserData, AudioSessionPropertyID 
         
         switch (event.subtype) {
             case UIEventSubtypeRemoteControlPause:
-                [self.audioPlayer pause];
+                [self.audioPlayerNode pause];
                 [self unselectCell:cell];
                 break;
                 
             case UIEventSubtypeRemoteControlPlay:
-                [self.audioPlayer play];
+                if(self.selectedEpisode != nil)
+                {
+                    [self playEpisode:self.selectedEpisode];
+                }
+                //[self.audioPlayer play];
                 [self selectCell:cell];
                 break;
             case UIEventSubtypeRemoteControlPreviousTrack:
                 //[self.audioPlayer previousTrack: nil];
                 NSLog(@"Skip 15 second back");
-                self.selectedEpisode.currentPlaybackPosition -= 15;
-                [self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
+                //self.selectedEpisode.currentPlaybackPosition -= 15;
+                //[self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
+                
+                if(self.selectedEpisode != nil)
+                {
+                    self.selectedEpisode.currentPlaybackPosition -= 10;
+                    [self playEpisode:self.selectedEpisode];
+                }
                 break;
                 
             case UIEventSubtypeRemoteControlNextTrack:
                 //[self.audioPlayer nextTrack: nil];
                 NSLog(@"Skip 15 seconds forward");
-                self.selectedEpisode.currentPlaybackPosition += 15;
+                //self.selectedEpisode.currentPlaybackPosition += 15;
+                if(self.selectedEpisode != nil)
+                {
+                    self.selectedEpisode.currentPlaybackPosition += 20;
+                    [self playEpisode:self.selectedEpisode];
+                }
                 break;
             default:
                 break;
         }
         
-        [self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
+        //[self.audioPlayer setCurrentTime:self.selectedEpisode.currentPlaybackPosition];
         
-        NSArray *keys = [NSArray arrayWithObjects:MPMediaItemPropertyArtwork, MPMediaItemPropertyMediaType, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyPodcastPersistentID, MPMediaItemPropertyArtist, MPMediaItemPropertyTitle, MPMediaItemPropertyPodcastTitle, MPMediaItemPropertyPlaybackDuration, MPNowPlayingInfoPropertyPlaybackRate, MPNowPlayingInfoPropertyElapsedPlaybackTime, nil];
-        NSArray *values = [NSArray arrayWithObjects:[[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"dharma talk icon 1024"]], [NSNumber numberWithInteger:MPMediaTypePodcast], @"Mission Dharma - Dharma Talks", @"Mission Dharma - Dharma Talks", self.selectedEpisode.speaker, self.selectedEpisode.title, self.selectedEpisode.title, [NSNumber numberWithFloat:[self.audioPlayer duration]], [NSNumber numberWithInt:1], [NSNumber numberWithFloat:self.selectedEpisode.currentPlaybackPosition], nil];
-        NSDictionary *mediaInfo = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaInfo];
+        [self setNowPlayingInfoCenterInfo];
         
     }
+}
+
+-(void) setNowPlayingInfoCenterInfo
+{
+    double sampleRate = self.audioFile.processingFormat.sampleRate;
+    NSTimeInterval episodeLength = self.audioFile.length / sampleRate;
+    
+    NSArray *keys = [NSArray arrayWithObjects:MPMediaItemPropertyArtwork, MPMediaItemPropertyMediaType, MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyPodcastPersistentID, MPMediaItemPropertyArtist, MPMediaItemPropertyTitle, MPMediaItemPropertyPodcastTitle, MPMediaItemPropertyPlaybackDuration, MPNowPlayingInfoPropertyPlaybackRate, MPNowPlayingInfoPropertyElapsedPlaybackTime, nil];
+    NSArray *values = [NSArray arrayWithObjects:[[MPMediaItemArtwork alloc] initWithImage:[UIImage imageNamed:@"dharma talk icon 1024"]], [NSNumber numberWithInteger:MPMediaTypePodcast], @"Mission Dharma - Dharma Talks", @"Mission Dharma - Dharma Talks", self.selectedEpisode.speaker, self.selectedEpisode.title, self.selectedEpisode.title, [NSNumber numberWithFloat:episodeLength], [NSNumber numberWithInt:1], [NSNumber numberWithFloat:self.selectedEpisode.currentPlaybackPosition], nil];
+    
+    NSDictionary *mediaInfo = [NSDictionary dictionaryWithObjects:values forKeys:keys];
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaInfo];
 }
 
 -(void) updateAudioProgressForCell
 {
     DHBAudioTableViewCell *cell = [self.timer userInfo];
     
-    float audioPlayerPercentComplete = (self.audioPlayer.currentTime / self.audioPlayer.duration);
+    double sampleRate = self.audioFile.processingFormat.sampleRate;
+    NSTimeInterval episodeLength = self.audioFile.length / sampleRate;
     
-    [cell.nowPlayingLabel setText:[NSString stringWithFormat:@"%02.f:%02.f - %02.f:%02.f", floor(self.selectedEpisode.currentPlaybackPosition / 60), floor(self.selectedEpisode.currentPlaybackPosition) - (floor(self.selectedEpisode.currentPlaybackPosition / 60) * 60), floor(self.audioPlayer.duration / 60), self.audioPlayer.duration - (floor(self.audioPlayer.duration / 60) * 60) ]];
+    AVAudioTime *nodeTime = self.audioPlayerNode.lastRenderTime;
+    AVAudioTime *playerTime = [self.audioPlayerNode playerTimeForNodeTime:nodeTime];
+    
+    NSTimeInterval seconds = (double)playerTime.sampleTime / playerTime.sampleRate;
+    seconds = self.audioFile.framePosition / self.audioFile.processingFormat.sampleRate;
+    
+    float audioPlayerPercentComplete = (seconds / episodeLength);
+    
+    [self.selectedEpisode setCurrentPlaybackPosition:seconds];
+    
+    [cell.nowPlayingLabel setText:[NSString stringWithFormat:@"%02.f:%02.f - %02.f:%02.f", floor(self.selectedEpisode.currentPlaybackPosition / 60), floor(self.selectedEpisode.currentPlaybackPosition) - (floor(self.selectedEpisode.currentPlaybackPosition / 60) * 60), floor(episodeLength / 60), ((episodeLength / 60) - floor(episodeLength / 60)) * 60 ]];
 
     [cell.progressView setProgress:audioPlayerPercentComplete animated:NO];
-    [self.selectedEpisode setCurrentPlaybackPosition:self.audioPlayer.currentTime];
-    if(self.selectedEpisode.duration == 0) {
-        [self.selectedEpisode setDuration:self.audioPlayer.duration];
-    }
-    if(self.selectedEpisode.isUnplayed) {
+    
+    if(self.selectedEpisode.isUnplayed)
+    {
         self.selectedEpisode.isUnplayed = NO;
+        
         [cell.unplayedIndicator setHidden:YES];
     }
+    
     [self.selectedEpisode save];
     
-    if(audioPlayerPercentComplete == 1.0) {
+    if(audioPlayerPercentComplete > 0.99)
+    {
         [self.timer invalidate];
         self.timer = nil;
         [self unselectCell:cell];
-        [self.audioPlayer stop];
+        [self.audioPlayerNode stop];
         //[cell.progressView removeFromSuperview];
         //[self.tableView reloadData];
     }
