@@ -29,11 +29,9 @@ import UIKit
     static let lightColor = UIColor(red: CGFloat(0) / 255, green: CGFloat(179) / 255, blue: CGFloat(163) / 255, alpha: CGFloat(1))
     static let darkColor = UIColor(red: CGFloat(125) / 255, green: CGFloat(62) / 255, blue: CGFloat(0) / 255, alpha: CGFloat(1))
     
-    var applicationHome = ""
+    static var applicationHome = ""
     var isConnectedViaWifi = false
     var isICloudEnabled = false
-    var podcast: DHBPodcast!
-    var newPodcast = Podcast()
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
@@ -42,15 +40,14 @@ import UIKit
         
         if let dir = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first
         {
-            applicationHome = dir.path
+            AppDelegate.applicationHome = dir.path
         }
         
         DispatchQueue.main.async
         {
-            self.podcast = DHBPodcast()
-//            self.podcast.loadEpisodes()
-            self.newPodcast.loadEpisodes()
-                
+            Podcast.sharedInstance.managedObjectContext = self.managedObjectContext
+            Podcast.sharedInstance.loadEpisodes()
+            
             self.startNetworkAvailabilityTest()
         }
         

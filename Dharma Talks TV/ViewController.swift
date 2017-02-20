@@ -21,7 +21,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var audioFile = AVAudioFile()
     var audioPlayerNode: AVAudioPlayerNode!
     var playbackTimer = NSTimer()
-    var selectedEpisode: DHBPodcastEpisode?
+    var selectedEpisode: PodcastEpisode?
     
     @IBOutlet weak var dharmaTalksTableView: UITableView!
     
@@ -117,7 +117,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             let yearsOfEpisodes = appDelegate.podcast.getUniqueYearsOfEpisodes()
             let episodesForYear = appDelegate.podcast.getEpisodesForYear(yearsOfEpisodes.objectAtIndex(indexPath.section) as! Int)
             
-            let episode = episodesForYear[indexPath.row] as! DHBPodcastEpisode
+            let episode = episodesForYear[indexPath.row] as! PodcastEpisode
             
             cell.textLabel?.text = episode.title
             
@@ -153,7 +153,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             let yearsOfEpisodes = appDelegate.podcast.getUniqueYearsOfEpisodes()
             let episodesForYear = appDelegate.podcast.getEpisodesForYear(yearsOfEpisodes.objectAtIndex(indexPath.section) as! Int)
             
-            let episode = episodesForYear[indexPath.row] as! DHBPodcastEpisode
+            let episode = episodesForYear[indexPath.row] as! PodcastEpisode
             
             if audioPlayerNode == nil || !audioPlayerNode.playing
             {
@@ -168,7 +168,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    func playEpisode(episode: DHBPodcastEpisode)
+    func playEpisode(episode: PodcastEpisode)
     {
         audioEngine = AVAudioEngine()
         audioPlayerNode = AVAudioPlayerNode()
@@ -278,7 +278,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     /*
     
-    - (void) playEpisode:(DHBPodcastEpisode *) episode
+    - (void) playEpisode:(PodcastEpisode *) episode
     {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.audioEngine = [[AVAudioEngine alloc] init];

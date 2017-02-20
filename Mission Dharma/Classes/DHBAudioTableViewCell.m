@@ -71,7 +71,7 @@
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"downloadInProgress"]) {
+    if([keyPath isEqualToString:@"downloadProgress"]) {
         float newValue = [[change valueForKey:NSKeyValueChangeNewKey] floatValue];
         [self.downloadProgressView setProgress:newValue animated:NO];
         [self.actionButton setTitle:@"DOWNLOADING" forState:UIControlStateNormal];

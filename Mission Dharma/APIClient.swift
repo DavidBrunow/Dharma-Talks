@@ -36,8 +36,6 @@ class ApiClient: NSObject
         
         request.httpMethod = method.rawValue
         
-        let postData = body?.data(using: .utf8)
-        
         let config = URLSessionConfiguration.default
         
         let urlSession = URLSession(configuration: config)

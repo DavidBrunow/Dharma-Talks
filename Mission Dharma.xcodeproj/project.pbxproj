@@ -21,18 +21,18 @@
 		2319DD7C179044DD00B8A864 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2319DD7A179044DD00B8A864 /* InfoPlist.strings */; };
 		2319DD7E179044DD00B8A864 /* Mission_DharmaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2319DD7D179044DD00B8A864 /* Mission_DharmaTests.m */; };
 		235543B01CCD2BB800C5F41C /* DHBAudioTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */; };
-		2369784E189619CA009903E5 /* DHBPodcast.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784B189619CA009903E5 /* DHBPodcast.m */; };
-		2369784F189619CA009903E5 /* DHBPodcastEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784D189619CA009903E5 /* DHBPodcastEpisode.m */; };
 		237806701817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */; };
 		237F8F8517B4109F0040A13C /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 237F8F8417B4109F0040A13C /* libxml2.dylib */; };
 		238211701E594E7700B464C8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2382116F1E594E7700B464C8 /* Podcast.swift */; };
 		238211711E594E7700B464C8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2382116F1E594E7700B464C8 /* Podcast.swift */; };
 		238211731E59537900B464C8 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238211721E59537900B464C8 /* APIClient.swift */; };
 		238211741E59537900B464C8 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238211721E59537900B464C8 /* APIClient.swift */; };
+		238211821E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238211801E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift */; };
+		238211831E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238211801E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift */; };
+		238211841E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238211811E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift */; };
+		238211851E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238211811E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift */; };
 		2388D94E1856B1F40006BA09 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2388D94D1856B1F40006BA09 /* QuartzCore.framework */; };
-		239686B41C373BC0000EC667 /* DHBPodcast.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784B189619CA009903E5 /* DHBPodcast.m */; };
 		239686B51C373BC4000EC667 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D71DEE1C3050C400D64E00 /* AppDelegate.swift */; };
-		239686B61C373BC8000EC667 /* DHBPodcastEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2369784D189619CA009903E5 /* DHBPodcastEpisode.m */; };
 		239686B71C373F1A000EC667 /* Mission_Dharma.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 23D71DF31C30A40300D64E00 /* Mission_Dharma.xcdatamodel */; };
 		239686B81C373F1F000EC667 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */; };
 		239686B91C373F4A000EC667 /* NetworkAvailability.m in Sources */ = {isa = PBXBuildFile; fileRef = 23D71DF11C3051FF00D64E00 /* NetworkAvailability.m */; };
@@ -76,16 +76,14 @@
 		2319DD79179044DD00B8A864 /* Mission DharmaTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Mission DharmaTests-Info.plist"; sourceTree = "<group>"; };
 		2319DD7B179044DD00B8A864 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2319DD7D179044DD00B8A864 /* Mission_DharmaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Mission_DharmaTests.m; sourceTree = "<group>"; };
-		2369784A189619CA009903E5 /* DHBPodcast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBPodcast.h; path = Classes/DHBPodcast.h; sourceTree = "<group>"; };
-		2369784B189619CA009903E5 /* DHBPodcast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBPodcast.m; path = Classes/DHBPodcast.m; sourceTree = "<group>"; };
-		2369784C189619CA009903E5 /* DHBPodcastEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBPodcastEpisode.h; path = Classes/DHBPodcastEpisode.h; sourceTree = "<group>"; };
-		2369784D189619CA009903E5 /* DHBPodcastEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBPodcastEpisode.m; path = Classes/DHBPodcastEpisode.m; sourceTree = "<group>"; };
 		2378066F1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DHBPodcastEpisodeModel.xcdatamodel; sourceTree = "<group>"; };
 		237F8F7A17B357180040A13C /* DHBAudioTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewController.h; path = Classes/DHBAudioTableViewController.h; sourceTree = "<group>"; };
 		237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioTableViewController.m; path = Classes/DHBAudioTableViewController.m; sourceTree = "<group>"; };
 		237F8F8417B4109F0040A13C /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		2382116F1E594E7700B464C8 /* Podcast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
 		238211721E59537900B464C8 /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		238211801E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PodcastEpisode+CoreDataClass.swift"; path = "../PodcastEpisode+CoreDataClass.swift"; sourceTree = "<group>"; };
+		238211811E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PodcastEpisode+CoreDataProperties.swift"; path = "../PodcastEpisode+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2388D94D1856B1F40006BA09 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		23BD98FA1A7D62FC00007480 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		23C43358181DB07400598D39 /* DHBAudioTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewCell.h; path = Classes/DHBAudioTableViewCell.h; sourceTree = "<group>"; };
@@ -225,10 +223,6 @@
 				23BD98FA1A7D62FC00007480 /* Storyboard.storyboard */,
 				23D71DF51C30B46F00D64E00 /* LaunchScreen.storyboard */,
 				23D71DEE1C3050C400D64E00 /* AppDelegate.swift */,
-				2369784A189619CA009903E5 /* DHBPodcast.h */,
-				2369784B189619CA009903E5 /* DHBPodcast.m */,
-				2369784C189619CA009903E5 /* DHBPodcastEpisode.h */,
-				2369784D189619CA009903E5 /* DHBPodcastEpisode.m */,
 				23D71DF01C3051FF00D64E00 /* NetworkAvailability.h */,
 				23D71DF11C3051FF00D64E00 /* NetworkAvailability.m */,
 				237F8F7A17B357180040A13C /* DHBAudioTableViewController.h */,
@@ -239,6 +233,8 @@
 				23D71DF31C30A40300D64E00 /* Mission_Dharma.xcdatamodel */,
 				23D71DED1C3050C400D64E00 /* Mission Dharma-Bridging-Header.h */,
 				2382116F1E594E7700B464C8 /* Podcast.swift */,
+				238211801E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift */,
+				238211811E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift */,
 				238211721E59537900B464C8 /* APIClient.swift */,
 			);
 			name = Classes;
@@ -404,13 +400,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				237806701817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */,
-				2369784F189619CA009903E5 /* DHBPodcastEpisode.m in Sources */,
+				238211821E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift in Sources */,
 				23D71DF21C3051FF00D64E00 /* NetworkAvailability.m in Sources */,
 				238211731E59537900B464C8 /* APIClient.swift in Sources */,
 				23C4335A181DB07400598D39 /* DHBAudioTableViewCell.m in Sources */,
+				238211841E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift in Sources */,
 				23D71DEF1C3050C400D64E00 /* AppDelegate.swift in Sources */,
 				238211701E594E7700B464C8 /* Podcast.swift in Sources */,
-				2369784E189619CA009903E5 /* DHBPodcast.m in Sources */,
 				23D71DF41C30A40300D64E00 /* Mission_Dharma.xcdatamodel in Sources */,
 				235543B01CCD2BB800C5F41C /* DHBAudioTableViewController.m in Sources */,
 			);
@@ -432,9 +428,9 @@
 				239686B51C373BC4000EC667 /* AppDelegate.swift in Sources */,
 				239686B91C373F4A000EC667 /* NetworkAvailability.m in Sources */,
 				23D71E001C373A4700D64E00 /* ViewController.swift in Sources */,
-				239686B61C373BC8000EC667 /* DHBPodcastEpisode.m in Sources */,
-				239686B41C373BC0000EC667 /* DHBPodcast.m in Sources */,
+				238211831E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift in Sources */,
 				238211711E594E7700B464C8 /* Podcast.swift in Sources */,
+				238211851E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift in Sources */,
 				239686B81C373F1F000EC667 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */,
 				238211741E59537900B464C8 /* APIClient.swift in Sources */,
 			);
