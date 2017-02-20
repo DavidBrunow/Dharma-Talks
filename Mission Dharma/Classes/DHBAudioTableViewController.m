@@ -663,7 +663,7 @@
     
     if(self.selectedEpisode.isUnplayed)
     {
-        self.selectedEpisode.isUnplayed = NO;
+        self.selectedEpisode.isUnplayed = [NSNumber numberWithBool: NO];
         
         [cell.unplayedIndicator setHidden:YES];
     }

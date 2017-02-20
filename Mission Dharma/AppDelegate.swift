@@ -88,13 +88,13 @@ import UIKit
     
     func iCloudKeyValueStoreDidChange(_ notification: Notification)
     {
-        let defaultKeyValueStore = NSUbiquitousKeyValueStore.default()
+        let _ = NSUbiquitousKeyValueStore.default()
         
         if let userInfo = (notification as NSNotification).userInfo
         {
             if let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
             {
-                for key in changedKeys
+                for _ in changedKeys
                 {
                     /*
                     switch key
@@ -345,7 +345,7 @@ import UIKit
         // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
         // Create the coordinator and store
         var coordinator: NSPersistentStoreCoordinator? = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = try! self.applicationDocumentsDirectory.appendingPathComponent("Mission_Dharma.sqlite")
+        let url = self.applicationDocumentsDirectory.appendingPathComponent("Mission_Dharma.sqlite")
         
         var error: NSError? = nil
         var failureReason = "There was an error creating or loading the application's saved data."
@@ -390,8 +390,10 @@ import UIKit
         if coordinator == nil {
             return nil
         }
-        var managedObjectContext = NSManagedObjectContext()
+        
+        var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
+        
         return managedObjectContext
     }()
     

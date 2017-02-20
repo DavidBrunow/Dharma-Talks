@@ -35,5 +35,4 @@ extension PodcastEpisode
     @NSManaged public var speaker: String?
     @NSManaged public var title: String?
     @NSManaged public var urlString: String?
-
 }

@@ -222,6 +222,7 @@
 			children = (
 				23BD98FA1A7D62FC00007480 /* Storyboard.storyboard */,
 				23D71DF51C30B46F00D64E00 /* LaunchScreen.storyboard */,
+				238211721E59537900B464C8 /* APIClient.swift */,
 				23D71DEE1C3050C400D64E00 /* AppDelegate.swift */,
 				23D71DF01C3051FF00D64E00 /* NetworkAvailability.h */,
 				23D71DF11C3051FF00D64E00 /* NetworkAvailability.m */,
@@ -235,7 +236,6 @@
 				2382116F1E594E7700B464C8 /* Podcast.swift */,
 				238211801E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift */,
 				238211811E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift */,
-				238211721E59537900B464C8 /* APIClient.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -319,7 +319,7 @@
 		2319DD47179044DD00B8A864 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = DHB;
+				CLASSPREFIX = "";
 				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "David Brunow";
@@ -563,7 +563,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -573,10 +572,7 @@
 				INFOPLIST_FILE = "Mission Dharma/Mission Dharma-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/davidhbrunow/Documents/Development/Mission\\ Dharma/Mission\\ Dharma/TestFlightSDK2",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.brunow.Mission-Dharma";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -593,7 +589,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -603,10 +598,7 @@
 				INFOPLIST_FILE = "Mission Dharma/Mission Dharma-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/davidhbrunow/Documents/Development/Mission\\ Dharma/Mission\\ Dharma/TestFlightSDK2",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.brunow.Mission-Dharma";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
