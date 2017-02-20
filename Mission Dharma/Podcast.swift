@@ -17,24 +17,66 @@
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import CoreData
 import UIKit
 
 class Podcast: NSObject
 {
-    var podcastEpisodes = [DHBPodcastEpisode]()
+    var podcastEpisodes = [PodcastEpisode]()
     var podcastRootURLString = "http://www.missiondharma.org";
     var hasLoadedEpisodes = false;
+    var managedObjectContext: NSManagedObjectContext!
+    
+    static let sharedInstance = Podcast()
+    
+    fileprivate override init() {} //This prevents others from using the default '()' initializer for this class.
+    
+    var episodesDictionary: [Int: [PodcastEpisode]]
+    {
+        var dictionary = [Int: [PodcastEpisode]]()
+        var keys = [Int]()
+        
+        for episode in podcastEpisodes
+        {
+            let year = Calendar.current.component(.year, from: episode.recordDate!)
+            
+            if !keys.contains(year)
+            {
+                keys.append(year)
+            }
+        }
+        
+        for key in keys
+        {
+            var episodes = [PodcastEpisode]()
+            
+            for episode in podcastEpisodes
+            {
+                let year = Calendar.current.component(.year, from: episode.recordDate!)
+                
+                if year == key
+                {
+                    episodes.append(episode)
+                }
+            }
+            
+            episodes.sort(by: { $0.recordDate! > $1.recordDate! })
+            
+            dictionary[key] = episodes
+        }
+        
+        return dictionary
+    }
     
     func loadEpisodes()
     {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         hasLoadedEpisodes = false
 
         if podcastEpisodes.count == 0
         {
-            let fetchRequest = NSFetchRequest<DHBPodcastEpisode>(entityName: "PodcastEpisode")
+            let fetchRequest = NSFetchRequest<PodcastEpisode>(entityName: "PodcastEpisode")
             
-            if let context = appDelegate.managedObjectContext
+            if let context = managedObjectContext
             {
                 let entity = NSEntityDescription.entity(forEntityName: "PodcastEpisode", in: context)
                 
@@ -46,14 +88,14 @@ class Podcast: NSObject
                 {
                     for outerEpisode in coreDataEpisodes
                     {
-                        if let outerURLString = outerEpisode.value(forKey: "urlString") as? String
+                        if let outerURLString = outerEpisode.urlString
                         {
                             var isPresentInArray = false
                             
                             for innerEpisode in podcastEpisodes
                             {
                                 
-                                if let innerURLString = innerEpisode.value(forKey: "urlString") as? String
+                                if let innerURLString = innerEpisode.urlString
                                     , outerURLString == innerURLString
                                 {
                                     isPresentInArray = true
@@ -66,7 +108,10 @@ class Podcast: NSObject
                             {
                                 if outerURLString.range(of: podcastRootURLString) == nil
                                 {
-                                    outerEpisode.urlString = "\(podcastRootURLString)\(outerEpisode.urlString)"
+                                    if let urlString = outerEpisode.urlString
+                                    {
+                                        outerEpisode.urlString = "\(podcastRootURLString)\(urlString)"
+                                    }
                                 }
                                 
                                 podcastEpisodes.append(outerEpisode)
@@ -74,7 +119,7 @@ class Podcast: NSObject
                         }
                     }
                     
-                    podcastEpisodes.sort(by: { $0.recordDate < $1.recordDate })
+                    podcastEpisodes.sort(by: { $0.recordDate! < $1.recordDate! })
                     hasLoadedEpisodes = true
                     
                     NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: AppDelegate.Constants.EpisodesFetchedFromLocalDatabaseNotification)))
@@ -88,46 +133,50 @@ class Podcast: NSObject
             { data, response, error in
                 if let thisData = data
                 {
-                    
                     DispatchQueue.main.async
                     {
                         self.loadNewEpisodes(fromData: thisData)
                         
-                        self.podcastEpisodes.sort(by: { $0.recordDate < $1.recordDate })
+                        self.podcastEpisodes.sort(by: { $0.recordDate! < $1.recordDate! })
                     }
                 }
             }
         }
     }
     
-    func loadNewEpisodes(fromData data: Data)
+    private func loadNewEpisodes(fromData data: Data)
     {
         do
         {
-            let appDelegate = UIApplication.shared.delegate as! AppDelegate
-            
             if let jsonEpisodes = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: String]],
-                let managedObjectContext = appDelegate.managedObjectContext
+                let managedObjectContext = managedObjectContext
             {
-                
                 for jsonEpisode in jsonEpisodes
                 {
-                    //                    print("JSON Episode: \(jsonEpisode)")
                     var url: String?
                     
                     if let this = jsonEpisode["Url"]
                     {
-                        print("Url: \(this)")
                         url = this
                     }
                     
-                    if let thisURL = url, podcastEpisodes.filter({ $0.urlString == url }).count == 0
+                    if url?.range(of: podcastRootURLString) == nil
+                    {
+                        if let urlString = url
+                        {
+                            url = "\(podcastRootURLString)\(urlString)"
+                        }
+                    }
+                    
+                    if let thisURL = url, podcastEpisodes.filter({ $0.urlString == thisURL || thisURL.range(of: $0.urlString!) != nil }).count == 0
                     {
                         if let podcastEpisodeEntity =  NSEntityDescription.entity(forEntityName: "PodcastEpisode", in: managedObjectContext)
                         {
-                            let newEpisode = DHBPodcastEpisode(entity: podcastEpisodeEntity, insertInto: managedObjectContext)
+                            let newEpisode = PodcastEpisode(entity: podcastEpisodeEntity, insertInto: managedObjectContext)
                             
                             newEpisode.urlString = thisURL
+                            newEpisode.localPathString = URL(string: thisURL)?.lastPathComponent
+                            newEpisode.isUnplayed = true
                             
                             if let this = jsonEpisode["Date"]
                             {
@@ -138,19 +187,16 @@ class Podcast: NSObject
                                 {
                                     newEpisode.recordDate = thisDate
                                 }
-                                print("Date: \(this)")
                             }
                             
                             if let this = jsonEpisode["Title"]
                             {
                                 newEpisode.title = this
-                                print("Title: \(this)")
                             }
                             
                             if let this = jsonEpisode["Speaker"]
                             {
                                 newEpisode.speaker = this
-                                print("Speaker: \(this)")
                             }
                             
                             self.podcastEpisodes.append(newEpisode)
@@ -160,7 +206,7 @@ class Podcast: NSObject
                 
                 do
                 {
-                    try appDelegate.managedObjectContext?.save()
+                    try managedObjectContext.save()
                 }
                 catch _
                 {
@@ -181,57 +227,10 @@ class Podcast: NSObject
         {
             if !episode.isDownloaded
             {
-                episode.downloadEpisode()
+                episode.download(completionHandler: { error in })
             }
         }
     }
-    
-    /*
-     
-     -(NSMutableArray *)getUniqueYearsOfEpisodes
-     {
-     NSMutableArray *uniqueYears = [[NSMutableArray alloc] init];
-     
-     if(self.podcastEpisodes.count > 0) {
-     DHBPodcastEpisode *thisEpisode = [self.podcastEpisodes objectAtIndex:0];
-     
-     NSDateComponents *thisComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:thisEpisode.recordDate];
-     [uniqueYears addObject:[NSNumber numberWithLong:[thisComponents year]]];
-     
-     for(int x = 1; x < self.podcastEpisodes.count; x++) {
-     DHBPodcastEpisode *previousEpisode = [self.podcastEpisodes objectAtIndex:x - 1];
-     thisEpisode = [self.podcastEpisodes objectAtIndex:x];
-     NSDateComponents *previousComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:previousEpisode.recordDate];
-     thisComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:thisEpisode.recordDate];
-     
-     if([thisComponents year] != [previousComponents year]) {
-     [uniqueYears addObject:[NSNumber numberWithLong:[thisComponents year]]];
-     }
-     }
-     }
-     
-     return uniqueYears;
-     }
-     
-     -(NSMutableArray *)getEpisodesForYear:(NSInteger) year
-     {
-     NSMutableArray *episodesForYear = [[NSMutableArray alloc] init];
-     
-     for(int x = 0; x < self.podcastEpisodes.count; x++)
-     {
-     DHBPodcastEpisode *thisEpisode = [self.podcastEpisodes objectAtIndex:x];
-     
-     NSDateComponents *thisComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:thisEpisode.recordDate];
-     
-     if([thisComponents year] == year)
-     {
-     [episodesForYear addObject:thisEpisode];
-     }
-     }
-     
-     return episodesForYear;
-     }
- */
 }
 
 // class methods
