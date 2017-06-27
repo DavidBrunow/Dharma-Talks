@@ -56,6 +56,8 @@
 {
     [super layoutSubviews];
     
+    self.unplayedIndicatorView.layer.cornerRadius = 5;
+
     [self.nowPlayingLabel setFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 90, 12, 80, 26)];
     
     [self.playPauseButton setFrame:CGRectMake([[UIScreen mainScreen]bounds].size.width - 100, 10, 90, 45)];
@@ -71,21 +73,21 @@
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if([keyPath isEqualToString:@"downloadProgress"]) {
-        float newValue = [[change valueForKey:NSKeyValueChangeNewKey] floatValue];
-        [self.downloadProgressView setProgress:newValue animated:NO];
-        [self.actionButton setTitle:@"DOWNLOADING" forState:UIControlStateNormal];
-        [self.actionButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
-        
-        if(newValue == 1.0) {
-            [self.actionButton setTitle:@"" forState:UIControlStateNormal];
-            [self.actionButton setHidden:YES];
-            [self.downloadProgressView setHidden:YES];
-            [self.progressView setHidden:NO];
-            
-            [self layoutSubviews];
-        }
-    }
+//    if([keyPath isEqualToString:@"downloadProgress"]) {
+//        float newValue = [[change valueForKey:NSKeyValueChangeNewKey] floatValue];
+//        [self.downloadProgressView setProgress:newValue animated:NO];
+//        [self.actionButton setTitle:@"DOWNLOADING" forState:UIControlStateNormal];
+//        [self.actionButton.titleLabel setAdjustsFontSizeToFitWidth:YES];
+//        
+//        if(newValue == 1.0) {
+//            [self.actionButton setTitle:@"" forState:UIControlStateNormal];
+//            [self.actionButton setHidden:YES];
+//            [self.downloadProgressView setHidden:YES];
+//            [self.progressView setHidden:NO];
+//            
+//            [self layoutSubviews];
+//        }
+//    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

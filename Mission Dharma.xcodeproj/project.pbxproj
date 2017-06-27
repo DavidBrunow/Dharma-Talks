@@ -36,6 +36,9 @@
 		239686B71C373F1A000EC667 /* Mission_Dharma.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 23D71DF31C30A40300D64E00 /* Mission_Dharma.xcdatamodel */; };
 		239686B81C373F1F000EC667 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */; };
 		239686B91C373F4A000EC667 /* NetworkAvailability.m in Sources */ = {isa = PBXBuildFile; fileRef = 23D71DF11C3051FF00D64E00 /* NetworkAvailability.m */; };
+		23A896CC1E7E23C500A1A4C1 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A896CB1E7E23C500A1A4C1 /* SettingsTableViewController.swift */; };
+		23A896CE1E7EEF2E00A1A4C1 /* AboutTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A896CD1E7EEF2E00A1A4C1 /* AboutTableViewController.swift */; };
+		23B348211EB6C6DC0067E4F8 /* DownloadClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B348201EB6C6DC0067E4F8 /* DownloadClient.swift */; };
 		23BD98FB1A7D62FC00007480 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23BD98FA1A7D62FC00007480 /* Storyboard.storyboard */; };
 		23C4335A181DB07400598D39 /* DHBAudioTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 23C43359181DB07400598D39 /* DHBAudioTableViewCell.m */; };
 		23C66EA218326E920054BFD4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 23C66EA118326E920054BFD4 /* libz.dylib */; };
@@ -77,6 +80,7 @@
 		2319DD7B179044DD00B8A864 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2319DD7D179044DD00B8A864 /* Mission_DharmaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Mission_DharmaTests.m; sourceTree = "<group>"; };
 		2378066F1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DHBPodcastEpisodeModel.xcdatamodel; sourceTree = "<group>"; };
+		2379F0531E8883FC0011F7FA /* Mission Dharma.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Mission Dharma.entitlements"; sourceTree = "<group>"; };
 		237F8F7A17B357180040A13C /* DHBAudioTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewController.h; path = Classes/DHBAudioTableViewController.h; sourceTree = "<group>"; };
 		237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioTableViewController.m; path = Classes/DHBAudioTableViewController.m; sourceTree = "<group>"; };
 		237F8F8417B4109F0040A13C /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
@@ -85,6 +89,9 @@
 		238211801E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PodcastEpisode+CoreDataClass.swift"; path = "../PodcastEpisode+CoreDataClass.swift"; sourceTree = "<group>"; };
 		238211811E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "PodcastEpisode+CoreDataProperties.swift"; path = "../PodcastEpisode+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2388D94D1856B1F40006BA09 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		23A896CB1E7E23C500A1A4C1 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		23A896CD1E7EEF2E00A1A4C1 /* AboutTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutTableViewController.swift; sourceTree = "<group>"; };
+		23B348201EB6C6DC0067E4F8 /* DownloadClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadClient.swift; sourceTree = "<group>"; };
 		23BD98FA1A7D62FC00007480 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		23C43358181DB07400598D39 /* DHBAudioTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DHBAudioTableViewCell.h; path = Classes/DHBAudioTableViewCell.h; sourceTree = "<group>"; };
 		23C43359181DB07400598D39 /* DHBAudioTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DHBAudioTableViewCell.m; path = Classes/DHBAudioTableViewCell.m; sourceTree = "<group>"; };
@@ -181,6 +188,7 @@
 		2319DD5A179044DD00B8A864 /* Mission Dharma */ = {
 			isa = PBXGroup;
 			children = (
+				2379F0531E8883FC0011F7FA /* Mission Dharma.entitlements */,
 				23B6CE9F1826C02F00FBE5F5 /* Assets */,
 				237F8F7D17B357200040A13C /* Classes */,
 				2319DD69179044DD00B8A864 /* Images.xcassets */,
@@ -223,6 +231,7 @@
 				23BD98FA1A7D62FC00007480 /* Storyboard.storyboard */,
 				23D71DF51C30B46F00D64E00 /* LaunchScreen.storyboard */,
 				238211721E59537900B464C8 /* APIClient.swift */,
+				23B348201EB6C6DC0067E4F8 /* DownloadClient.swift */,
 				23D71DEE1C3050C400D64E00 /* AppDelegate.swift */,
 				23D71DF01C3051FF00D64E00 /* NetworkAvailability.h */,
 				23D71DF11C3051FF00D64E00 /* NetworkAvailability.m */,
@@ -230,6 +239,8 @@
 				237F8F7B17B357180040A13C /* DHBAudioTableViewController.m */,
 				23C43358181DB07400598D39 /* DHBAudioTableViewCell.h */,
 				23C43359181DB07400598D39 /* DHBAudioTableViewCell.m */,
+				23A896CB1E7E23C500A1A4C1 /* SettingsTableViewController.swift */,
+				23A896CD1E7EEF2E00A1A4C1 /* AboutTableViewController.swift */,
 				2378066E1817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld */,
 				23D71DF31C30A40300D64E00 /* Mission_Dharma.xcdatamodel */,
 				23D71DED1C3050C400D64E00 /* Mission Dharma-Bridging-Header.h */,
@@ -327,6 +338,11 @@
 					2319DD4E179044DD00B8A864 = {
 						DevelopmentTeam = 97U5N2XGB9;
 						LastSwiftMigration = 0820;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					2319DD6E179044DD00B8A864 = {
 						ProvisioningStyle = Automatic;
@@ -402,13 +418,16 @@
 				237806701817753300CCEBF2 /* DHBPodcastEpisodeModel.xcdatamodeld in Sources */,
 				238211821E5AA1F200B464C8 /* PodcastEpisode+CoreDataClass.swift in Sources */,
 				23D71DF21C3051FF00D64E00 /* NetworkAvailability.m in Sources */,
+				23A896CC1E7E23C500A1A4C1 /* SettingsTableViewController.swift in Sources */,
 				238211731E59537900B464C8 /* APIClient.swift in Sources */,
 				23C4335A181DB07400598D39 /* DHBAudioTableViewCell.m in Sources */,
 				238211841E5AA1F200B464C8 /* PodcastEpisode+CoreDataProperties.swift in Sources */,
+				23B348211EB6C6DC0067E4F8 /* DownloadClient.swift in Sources */,
 				23D71DEF1C3050C400D64E00 /* AppDelegate.swift in Sources */,
 				238211701E594E7700B464C8 /* Podcast.swift in Sources */,
 				23D71DF41C30A40300D64E00 /* Mission_Dharma.xcdatamodel in Sources */,
 				235543B01CCD2BB800C5F41C /* DHBAudioTableViewController.m in Sources */,
+				23A896CE1E7EEF2E00A1A4C1 /* AboutTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,8 +583,10 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Mission Dharma/Mission Dharma.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 97U5N2XGB9;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mission Dharma/Mission Dharma-Prefix.pch";
 				HEADER_SEARCH_PATHS = usr/include/libxml2;
@@ -590,8 +611,10 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Mission Dharma/Mission Dharma.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 97U5N2XGB9;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Mission Dharma/Mission Dharma-Prefix.pch";
 				HEADER_SEARCH_PATHS = usr/include/libxml2;

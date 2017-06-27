@@ -21,11 +21,18 @@ import Foundation
 import CoreData
 
 @objc(PodcastEpisode)
-public class PodcastEpisode: NSManagedObject
+public class PodcastEpisode: NSManagedObject, DownloadClientDelegate
 {
+    struct Constants
+    {
+        static let PodcastDownloadProgressUpdateNotification = "Podcast Download Progress Updated"
+    }
+    
     var isDownloaded = false
-    var downloadProgress = Float(0)
     var cacheFolderPath = ""
+    var downloadClient: DownloadClient?
+    var downloadCompletionHandler: ((_ error: Error?) -> ())?
+    var downloadProgress = Float(0)
     
     public override func awakeFromFetch()
     {
@@ -56,25 +63,58 @@ public class PodcastEpisode: NSManagedObject
                 
             if let url = URL(string: this)
             {
-                ApiClient.sharedInstance.makeApiRequest(forUrl: url, withMethod: .get, andBody: nil)
-                { data, response, error in
-                    if let thisData = data
-                    {
-                        if FileManager.default.createFile(atPath: self.cacheFolderPath, contents: thisData, attributes: nil)
-                        {
-                            self.isDownloaded = true
-                            try? FileManager.default.addSkipBackupAttributeToItemAtURL(url: URL(fileURLWithPath: self.cacheFolderPath))
-                        }
-                        else
-                        {
-                            self.isDownloaded = false
-                        }
-                        
-                        completionHandler(error)
-                    }
-                }
+                downloadCompletionHandler = completionHandler
+                
+                downloadClient = DownloadClient(url, withDelegate: self)
+
+                downloadClient?.start()
+                
+                //ApiClient.sharedInstance.makeApiRequest(forUrl: url, withMethod: .get, andBody: nil)
+                //{ data, response, error in
+                //    if let thisData = data
+                //    {
+                //        if FileManager.default.createFile(atPath: self.cacheFolderPath, contents: thisData, attributes: nil)
+                //        {
+                //            self.isDownloaded = true
+                //            try? FileManager.default.addSkipBackupAttributeToItemAtURL(url: URL(fileURLWithPath: self.cacheFolderPath))
+                //        }
+                //        else
+                //        {
+                //            self.isDownloaded = false
+                //        }
+                //
+                //        completionHandler(error)
+                //    }
+                // }
             }
         }
+    }
+    
+    func downloadClient(_ downloadClient: DownloadClient, didCompleteWithData data: Data?, orError error: Error?)
+    {
+        if let thisData = data
+        {
+            if FileManager.default.createFile(atPath: self.cacheFolderPath, contents: thisData, attributes: nil)
+            {
+                self.isDownloaded = true
+                try? FileManager.default.addSkipBackupAttributeToItemAtURL(url: URL(fileURLWithPath: self.cacheFolderPath))
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.PodcastDownloadProgressUpdateNotification), object: self, userInfo: nil)
+            }
+            else
+            {
+                self.isDownloaded = false
+            }
+        }
+        
+        downloadCompletionHandler?(error)
+    }
+    
+    func downloadClient(_ downloadClient: DownloadClient, didUpdateProgress progress: Float)
+    {
+        downloadProgress = progress
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: Constants.PodcastDownloadProgressUpdateNotification), object: self, userInfo: nil)
     }
     
     func delete()

@@ -226,9 +226,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         {
             selectedEpisode?.currentPlaybackPosition = Float(episodePosition)
             
-            if selectedEpisode!.isUnplayed
+            if selectedEpisode!.isUnplayed == [NSNumber numberWithBool: YES]
             {
-                selectedEpisode?.isUnplayed = false
+                selectedEpisode?.isUnplayed = [NSNumber numberWithBool: NO]
             }
             
             selectedEpisode?.save()

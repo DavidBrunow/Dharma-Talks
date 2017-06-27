@@ -23,14 +23,15 @@ class ApiClient: NSObject
 {
     struct Constants
     {
-        static let APIEndpointURLString = "https://api.brunow.org/node/dharma-talks-v1/talks"
+        static let APIEndpointURLString         = "https://api.brunow.org/node/dharma-talks-v1/talks"
+        static let BackgroundSessionIdentifier  = "Background Session Identifier"
     }
     
     static let sharedInstance = ApiClient()
     
     fileprivate override init() {} //This prevents others from using the default '()' initializer for this class.
     
-    func makeApiRequest(forUrl url: URL, withMethod method: HTTPMethod, andBody body: String?, completionHandler: @escaping (_ data: Data?, _ response: URLResponse?, _ error: Error?) -> ())
+    func makeApiRequest(forUrl url: URL, withMethod method: HTTPMethod, andBody body: String?, completionHandler: @escaping ((_ data: Data?, _ response: URLResponse?, _ error: Error?) -> ()))
     {
         var request = URLRequest(url: url)
         
@@ -38,21 +39,21 @@ class ApiClient: NSObject
         
         let config = URLSessionConfiguration.default
         
-        let urlSession = URLSession(configuration: config)
+        let dataSession = URLSession(configuration: config)
         
-        let task = urlSession.dataTask(with: request)
-        { (data, response, error) in
-            completionHandler(data, response, error)
-        }
+        let dataTask = dataSession.dataTask(with: request)
+            { (data, response, error) in
+                completionHandler(data, response, error)
+            }
         
-        task.resume()
+        dataTask.resume()
     }
 }
 
 enum HTTPMethod: String
 {
-    case get = "GET"
-    case post = "POST"
+    case get    = "GET"
+    case post   = "POST"
 }
 
 enum APIError: Error

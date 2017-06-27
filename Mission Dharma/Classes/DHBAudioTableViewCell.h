@@ -25,7 +25,7 @@
 */
 @property (weak, nonatomic) IBOutlet UILabel *mainLabel;
 @property (weak, nonatomic) IBOutlet UILabel *subLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *unplayedIndicator;
+@property (strong, nonatomic) IBOutlet UIView *unplayedIndicatorView;
 @property (nonatomic, retain) UILabel *nowPlayingLabel;
 @property (nonatomic, retain) UIButton *actionButton;
 @property (nonatomic, retain) UIButton *playPauseButton;

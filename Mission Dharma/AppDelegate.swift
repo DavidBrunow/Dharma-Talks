@@ -23,6 +23,7 @@ import UIKit
         static let ModelPath = "DHBPodcastEpisodeModel"
         static let CoreDataUbiquitousContentNameKey = "MissionDharmaStore"
         static let EpisodesFetchedFromLocalDatabaseNotification = "Episodes Fetched From Local Database"
+        static let HideListenedToAndDeletedTalksKey = "Hide Listened To and Deleted Talks"
     }
     
     static let barTintColor = UIColor(red: CGFloat(0) / 255, green: CGFloat(152) / 255, blue: CGFloat(172) / 255, alpha: CGFloat(1))
@@ -32,9 +33,22 @@ import UIKit
     static var applicationHome = ""
     var isConnectedViaWifi = false
     var isICloudEnabled = false
+    var shouldHideListenedToAndDeletedTalks = true
+    {
+        didSet
+        {
+            let defaultKeyValueStore = NSUbiquitousKeyValueStore.default()
+            
+            defaultKeyValueStore.set(shouldHideListenedToAndDeletedTalks, forKey: Constants.HideListenedToAndDeletedTalksKey)
+            Podcast.sharedInstance.isHidingPlayedAndDeletedEpisodes = shouldHideListenedToAndDeletedTalks
+            
+            defaultKeyValueStore.synchronize()
+        }
+    }
+    
     var window: UIWindow?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+    func applicationDidFinishLaunching(_ application: UIApplication)
     {
         let fileManager = FileManager()
         
@@ -43,15 +57,24 @@ import UIKit
             AppDelegate.applicationHome = dir.path
         }
         
+        loadSettings()
+        
         DispatchQueue.main.async
         {
+            Podcast.sharedInstance.isHidingPlayedAndDeletedEpisodes = self.shouldHideListenedToAndDeletedTalks
             Podcast.sharedInstance.managedObjectContext = self.managedObjectContext
             Podcast.sharedInstance.loadEpisodes()
             
             self.startNetworkAvailabilityTest()
         }
+    }
+    
+    func loadSettings()
+    {
+        let defaultKeyValueStore = NSUbiquitousKeyValueStore.default()
+        let shouldHide = defaultKeyValueStore.bool(forKey: Constants.HideListenedToAndDeletedTalksKey)
         
-        return true
+        shouldHideListenedToAndDeletedTalks = shouldHide
     }
     
     func startNetworkAvailabilityTest()
@@ -88,33 +111,25 @@ import UIKit
     
     func iCloudKeyValueStoreDidChange(_ notification: Notification)
     {
-        let _ = NSUbiquitousKeyValueStore.default()
+        let defaultKeyValueStore = NSUbiquitousKeyValueStore.default()
         
         if let userInfo = (notification as NSNotification).userInfo
         {
             if let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String]
             {
-                for _ in changedKeys
+                for key in changedKeys
                 {
-                    /*
                     switch key
                     {
-                    case Constants.DefaultMailAppKey:
-                        if let mailApp = defaultKeyValueStore.stringForKey(Constants.DefaultMailAppKey)
-                        {
-                            defaultMailApp = mailApp
-                        }
-                        break;
-                    case Constants.IsIcloudEnabledKey:
-                        isIcloudEnabled = defaultKeyValueStore.boolForKey(Constants.IsIcloudEnabledKey)
-                        break;
-                    case Constants.IsSundayFirstDayOfWeekKey:
-                        isSundayFirstDayOfWeek = defaultKeyValueStore.boolForKey(Constants.IsSundayFirstDayOfWeekKey)
+                    case Constants.HideListenedToAndDeletedTalksKey:
+                        let shouldHide = defaultKeyValueStore.bool(forKey: Constants.HideListenedToAndDeletedTalksKey)
+                        
+                        shouldHideListenedToAndDeletedTalks = shouldHide
+                        
                         break;
                     default:
                         break;
                     }
-                    */
                 }
             }
         }
@@ -291,7 +306,7 @@ import UIKit
                 
                 if !success && error != nil
                 {
-                    print("We had an error in storesWillChange: \(error?.localizedDescription)")
+                    print("We had an error in storesWillChange: \(error!.localizedDescription)")
                 }
                 
                 // this causes a crash when returning from the background in certain circumstances. Commenting out on 8/13/2015 hoping no other problems pop up
@@ -347,7 +362,7 @@ import UIKit
         var coordinator: NSPersistentStoreCoordinator? = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         let url = self.applicationDocumentsDirectory.appendingPathComponent("Mission_Dharma.sqlite")
         
-        var error: NSError? = nil
+        var error: NSError?
         var failureReason = "There was an error creating or loading the application's saved data."
         
         var persistentStoreOptions: [NSObject: AnyObject] = [NSMigratePersistentStoresAutomaticallyOption as NSObject: true as AnyObject, NSInferMappingModelAutomaticallyOption as NSObject: true as AnyObject]
@@ -373,7 +388,7 @@ import UIKit
             error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
             // Replace this with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog("Unresolved error \(error), \(error?.userInfo)")
+            NSLog("Unresolved error \(error!), \(error!.userInfo)")
             abort()
         }
         catch
@@ -412,7 +427,7 @@ import UIKit
                     error = error1
                     // Replace this implementation with code to handle the error appropriately.
                     // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                    NSLog("Unresolved error \(error), \(error?.userInfo)")
+                    NSLog("Unresolved error \(error!), \(error!.userInfo)")
                     abort()
                 }
             }

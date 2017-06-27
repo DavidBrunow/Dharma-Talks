@@ -25,6 +25,7 @@ class Podcast: NSObject
     var podcastEpisodes = [PodcastEpisode]()
     var podcastRootURLString = "http://www.missiondharma.org";
     var hasLoadedEpisodes = false;
+    var isHidingPlayedAndDeletedEpisodes = true;
     var managedObjectContext: NSManagedObjectContext!
     
     static let sharedInstance = Podcast()
@@ -61,6 +62,12 @@ class Podcast: NSObject
             }
             
             episodes.sort(by: { $0.recordDate! > $1.recordDate! })
+            
+            
+            if isHidingPlayedAndDeletedEpisodes
+            {
+                episodes = episodes.filter({ !($0.isUnplayed == 0 && $0.isDownloaded == false) })
+            }
             
             dictionary[key] = episodes
         }
@@ -104,7 +111,9 @@ class Podcast: NSObject
                                 }
                             }
                         
-                            if !isPresentInArray && outerEpisode.title != nil && outerEpisode.recordDate != nil
+                            if !isPresentInArray
+                                && outerEpisode.title != nil
+                                && outerEpisode.recordDate != nil
                             {
                                 if outerURLString.range(of: podcastRootURLString) == nil
                                 {
@@ -176,7 +185,7 @@ class Podcast: NSObject
                             
                             newEpisode.urlString = thisURL
                             newEpisode.localPathString = URL(string: thisURL)?.lastPathComponent
-                            newEpisode.isUnplayed = true
+                            newEpisode.isUnplayed = 1
                             
                             if let this = jsonEpisode["Date"]
                             {

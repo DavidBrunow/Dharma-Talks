@@ -31,6 +31,7 @@
 @property (strong, nonatomic) AVAudioOutputNode *audioOutputNode;
 @property (strong, nonatomic) NSDictionary<NSNumber *, NSArray<PodcastEpisode *> *> *episodesDictionary;
 @property (strong, nonatomic) NSMutableArray<NSNumber *> *yearKeys;
+@property (strong, nonatomic) NSMutableArray<NSIndexPath *> *downloadingCellIndexPaths;
 
 @end
 
@@ -48,6 +49,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.downloadingCellIndexPaths = [[NSMutableArray alloc] init];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
 
@@ -99,6 +102,10 @@
     [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"Episodes Fetched From Local Database" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDownloadProgress:) name:@"Podcast Download Progress Updated" object:nil];
+    
+    [self reloadTable];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -174,6 +181,8 @@
         cell = [[DHBAudioTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
+    [cell.downloadProgressView setHidden:true];
+    
     NSNumber *key = self.yearKeys[indexPath.section];
     PodcastEpisode *thisEpisode = self.episodesDictionary[key][indexPath.row];
 
@@ -190,16 +199,16 @@
         [cell.progressView setHidden:YES];
     }
     
-    if(thisEpisode.downloadProgress == 0 || thisEpisode.downloadProgress == 1.0)
-    {
-        [cell.downloadProgressView setProgress:0.0];
-        [cell.downloadProgressView setHidden:YES];
-    }
-    else
-    {
-        [cell.downloadProgressView setProgress:thisEpisode.downloadProgress];
-        [cell.downloadProgressView setHidden:NO];
-    }
+//    if(thisEpisode.downloadProgress == 0 || thisEpisode.downloadProgress == 1.0)
+//    {
+//        [cell.downloadProgressView setProgress:0.0];
+//        [cell.downloadProgressView setHidden:YES];
+//    }
+//    else
+//    {
+//        [cell.downloadProgressView setProgress:thisEpisode.downloadProgress];
+//        [cell.downloadProgressView setHidden:NO];
+//    }
     
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
@@ -215,6 +224,8 @@
     }
     
     cell.subLabel.text = [NSString stringWithFormat:@"%@ - %@", recordDateString, thisEpisode.speaker];
+    
+    [cell.progressView setHidden:YES];
 
     if(thisEpisode.isDownloaded)
     {
@@ -223,22 +234,27 @@
         [cell.actionButton setHidden:YES];
         [cell.progressView setHidden:NO];
     }
-    else
+    else if (thisEpisode.downloadProgress == 0 || thisEpisode.downloadProgress == 1.0)
     {
         //[cell setAccessoryType:UITableViewCellAccessoryNone];
         [cell.actionButton setTitle:@"DOWNLOAD" forState:UIControlStateNormal];
         [cell.actionButton setHidden:NO];
         [cell.actionButton addTarget:self action:@selector(downloadEpisode:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.progressView setHidden:YES];
-    }
-    
-    if(thisEpisode.isUnplayed)
-    {
-        [cell.unplayedIndicator setHidden:NO];
     }
     else
     {
-        [cell.unplayedIndicator setHidden:YES];
+        NSString *title = [NSString stringWithFormat:@"%f0%%", thisEpisode.downloadProgress * 100];
+        
+        [cell.actionButton setTitle:title forState:UIControlStateNormal];
+    }
+    
+    if([thisEpisode.isUnplayed intValue] == [[NSNumber numberWithBool:TRUE] intValue])
+    {
+        [cell.unplayedIndicatorView setHidden:NO];
+    }
+    else
+    {
+        [cell.unplayedIndicatorView setHidden:YES];
     }
     
     if([[[[MPNowPlayingInfoCenter defaultCenter] nowPlayingInfo] objectForKey:MPMediaItemPropertyTitle] isEqualToString:thisEpisode.title] && [self.audioPlayer isPlaying])
@@ -257,6 +273,15 @@
     return cell;
 }
 
+- (void) updateDownloadProgress:(NSNotification *) notification
+{
+    NSLog(@"Updating download progress: %lu", (unsigned long)self.downloadingCellIndexPaths.count);
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadRowsAtIndexPaths:self.downloadingCellIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    });
+}
+
 - (void)downloadEpisode:(id) sender
 {
     UIView *parent = [sender superview];
@@ -273,14 +298,18 @@
     NSNumber *key = self.yearKeys[thisIndexPath.section];
     PodcastEpisode *thisEpisode = self.episodesDictionary[key][thisIndexPath.row];
     
-    [thisEpisode addObserver:thisParentCell forKeyPath:@"downloadProgress" options:NSKeyValueObservingOptionNew context:nil];
-    [thisParentCell.actionButton setTitle:@"DOWNLOADING" forState:UIControlStateNormal];
+//    [thisEpisode addObserver:thisParentCell forKeyPath:@"downloadProgress" options:NSKeyValueObservingOptionNew context:nil];
+//    [thisParentCell.actionButton setTitle:@"DOWNLOADING" forState:UIControlStateNormal];
+    [self.downloadingCellIndexPaths addObject:thisIndexPath];
     [thisEpisode downloadWithCompletionHandler:^(NSError* error){
         dispatch_async(dispatch_get_main_queue(),
         ^{
             if (error == nil)
             {
                 [thisParentCell.actionButton setHidden:true];
+//                [thisParentCell.downloadProgressView setHidden:true];
+                
+                [self.downloadingCellIndexPaths removeObject:thisIndexPath];
             }
             else
             {
@@ -289,7 +318,7 @@
         });
     }];
     
-    [thisParentCell.downloadProgressView setHidden:NO];
+//    [thisParentCell.downloadProgressView setHidden:NO];
     
 }
 
@@ -467,6 +496,39 @@
     return canEditRow;
 }
 
+-(NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSNumber *key = self.yearKeys[indexPath.section];
+    PodcastEpisode *thisEpisode = self.episodesDictionary[key][indexPath.row];
+
+    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Remove Download" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        NSLog(@"need to delete here");
+        [thisEpisode delete];
+        
+        if ([thisEpisode.isUnplayed intValue] == [[NSNumber numberWithBool:TRUE] intValue])
+        {
+            NSArray *rowsToReload = [[NSArray alloc] initWithObjects:indexPath, nil];
+            
+            [self.tableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationRight];
+        }
+        else
+        {
+            [self refreshTable];
+        }
+    }];
+    
+    UITableViewRowAction *markUnreadAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Mark Unlistened" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        [thisEpisode setIsUnplayed:[NSNumber numberWithBool:TRUE]];
+        [thisEpisode save];
+        
+        NSArray *rowsToReload = [[NSArray alloc] initWithObjects:indexPath, nil];
+        
+        [self.tableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationRight];
+    }];
+    
+    return @[deleteAction, markUnreadAction];
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return @"Remove Download";
@@ -482,9 +544,16 @@
         
         [episodeToDelete delete];
         
-        NSArray *rowsToReload = [[NSArray alloc] initWithObjects:indexPath, nil];
-        
-        [self.tableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationRight];
+        if ([episodeToDelete.isUnplayed intValue] == [[NSNumber numberWithBool:TRUE] intValue])
+        {
+            NSArray *rowsToReload = [[NSArray alloc] initWithObjects:indexPath, nil];
+            
+            [self.tableView reloadRowsAtIndexPaths:rowsToReload withRowAnimation:UITableViewRowAnimationRight];
+        }
+        else
+        {
+            [self refreshTable];
+        }
     }
 }
 
@@ -534,6 +603,7 @@
     [UIView animateWithDuration:0.2 animations:^
     {
         [cell.mainLabel setTextColor:[UIColor whiteColor]];
+        [cell.subLabel setTextColor:[UIColor whiteColor]];
         [cell setBackgroundColor:AppDelegate.lightColor];
         [cell.progressView setProgressTintColor:[UIColor whiteColor]];
         [cell.progressView setHidden:YES];
@@ -661,13 +731,13 @@
 
     [cell.progressView setProgress:audioPlayerPercentComplete animated:NO];
     
-    if(self.selectedEpisode.isUnplayed)
+    if([self.selectedEpisode.isUnplayed intValue] == [[NSNumber numberWithBool:TRUE] intValue])
     {
         self.selectedEpisode.isUnplayed = [NSNumber numberWithBool: NO];
         
-        [cell.unplayedIndicator setHidden:YES];
+        [cell.unplayedIndicatorView setHidden:YES];
     }
-    
+
     [self.selectedEpisode save];
     
     if(audioPlayerPercentComplete > 0.99)
